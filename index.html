@@ -241,7 +241,6 @@
           <th>#</th>
           <th>วันที่</th>
           <th>คำ / ประโยค 🔊</th>
-          <th>คำอ่าน</th>
           <th>ความหมาย (ไทย)</th>
           <th>ตัวอย่างที่ 1</th>
           <th>ตัวอย่างที่ 2</th>
@@ -298,28 +297,65 @@ document.getElementById('rateRange').addEventListener('input', function() {
   document.getElementById('rateVal').textContent = this.value + '×';
 });
 
-function speak(text, btn) {
-  speechSynthesis.cancel();
-  if (currentBtn) { currentBtn.classList.remove('speaking'); }
-  if (currentBtn === btn && btn._speaking) { currentBtn = null; btn._speaking = false; return; }
+// แยกข้อความ a: / b: เป็น segments พร้อม speaker label
+function parseDialog(text) {
+  // split on "a :" or "b :" prefix (case-insensitive)
+  const parts = text.split(/(?=\b[ab]\s*:)/i).map(s => s.trim()).filter(Boolean);
+  if (parts.length <= 1) return [{ speaker: 'a', line: text }];
+  return parts.map(p => {
+    const m = p.match(/^([ab])\s*:\s*(.*)/is);
+    if (m) return { speaker: m[1].toLowerCase(), line: m[2].trim() };
+    return { speaker: 'a', line: p };
+  });
+}
 
-  const u = new SpeechSynthesisUtterance(text);
-  const sel = document.getElementById('voiceSelect');
-  const enV = voices.filter(v => v.lang.startsWith('en'));
-  if (enV[sel.value]) u.voice = enV[sel.value];
-  u.rate  = parseFloat(document.getElementById('rateRange').value);
-  u.pitch = 1;
+function speakDialog(segments, idx, btn, rate, enV, voiceIdx) {
+  if (idx >= segments.length) {
+    btn.classList.remove('speaking');
+    btn._speaking = false;
+    if (currentBtn === btn) currentBtn = null;
+    return;
+  }
+  const seg = segments[idx];
+  const u = new SpeechSynthesisUtterance(seg.line);
 
-  btn.classList.add('speaking');
-  btn._speaking = true;
-  currentBtn = btn;
+  // A = normal pitch, B = higher pitch (different speaker feel)
+  if (seg.speaker === 'a') {
+    u.pitch = 0.85;
+    if (enV[voiceIdx]) u.voice = enV[voiceIdx];
+  } else {
+    u.pitch = 1.35;
+    // try to pick opposite gender voice for B
+    const alt = enV.find((v,i) => i !== voiceIdx);
+    u.voice = alt ? alt : (enV[voiceIdx] || null);
+  }
+  u.rate = rate;
 
-  u.onend = u.onerror = () => {
+  u.onend  = () => speakDialog(segments, idx + 1, btn, rate, enV, voiceIdx);
+  u.onerror = () => {
     btn.classList.remove('speaking');
     btn._speaking = false;
     if (currentBtn === btn) currentBtn = null;
   };
   speechSynthesis.speak(u);
+}
+
+function speak(text, btn) {
+  speechSynthesis.cancel();
+  if (currentBtn) { currentBtn.classList.remove('speaking'); }
+  if (currentBtn === btn && btn._speaking) { currentBtn = null; btn._speaking = false; return; }
+
+  const sel    = document.getElementById('voiceSelect');
+  const enV    = voices.filter(v => v.lang.startsWith('en'));
+  const rate   = parseFloat(document.getElementById('rateRange').value);
+  const voiceIdx = parseInt(sel.value) || 0;
+
+  btn.classList.add('speaking');
+  btn._speaking = true;
+  currentBtn = btn;
+
+  const segments = parseDialog(text);
+  speakDialog(segments, 0, btn, rate, enV, voiceIdx);
 }
 
 // ── CSV PARSER ──────────────────────────────────────────────────
@@ -377,7 +413,6 @@ function buildRow(c, i) {
         <button class="speak-btn" data-text="${esc(eng)}" title="ฟังเสียง">🔊</button>
       </div>
     </td>
-    <td style="font-size:0.78rem;color:var(--muted);">${esc(phon)}</td>
     <td class="meaning-th">${esc(mean).replace(/\n/g,'<br>')}</td>
     ${exCell(c[5], c[6])}
     ${exCell(c[7], c[8])}
