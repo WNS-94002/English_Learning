@@ -16,9 +16,7 @@
       --blue: #2471a3;
       --green: #1e8449;
     }
-
     * { box-sizing: border-box; margin: 0; padding: 0; }
-
     body {
       background: #d9cbb5;
       font-family: 'Sarabun', sans-serif;
@@ -29,146 +27,94 @@
         radial-gradient(ellipse at 15% 15%, rgba(192,57,43,0.07) 0%, transparent 55%),
         radial-gradient(ellipse at 85% 85%, rgba(201,146,42,0.09) 0%, transparent 55%);
     }
-
     .notebook {
-      max-width: 1180px;
-      margin: 0 auto;
-      background: var(--paper);
-      border-radius: 3px;
+      max-width: 1200px; margin: 0 auto;
+      background: var(--paper); border-radius: 3px;
       box-shadow: 5px 5px 0 #bbb, 10px 10px 0 #ccc, 0 24px 70px rgba(0,0,0,0.2);
-      overflow: hidden;
-      position: relative;
+      overflow: hidden; position: relative;
     }
-
     .notebook::before {
-      content: '';
-      position: absolute;
-      left: 68px; top: 0; bottom: 0;
-      width: 2px;
-      background: rgba(192,57,43,0.2);
-      z-index: 5;
-      pointer-events: none;
+      content: ''; position: absolute;
+      left: 68px; top: 0; bottom: 0; width: 2px;
+      background: rgba(192,57,43,0.2); z-index: 5; pointer-events: none;
     }
 
     /* HEADER */
     .header {
-      background: var(--ink);
-      color: white;
+      background: var(--ink); color: white;
       padding: 26px 36px 26px 88px;
-      position: relative;
-      z-index: 10;
+      position: relative; z-index: 10;
     }
-
     .header-stripe {
-      position: absolute;
-      bottom: 0; left: 0; right: 0;
-      height: 4px;
+      position: absolute; bottom: 0; left: 0; right: 0; height: 4px;
       background: linear-gradient(90deg, var(--accent), var(--gold), var(--accent));
     }
-
-    .header-inner {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 14px;
-    }
-
-    .notebook-title {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.65rem;
-    }
-
+    .header-inner { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px; }
+    .notebook-title { font-family: 'Playfair Display', serif; font-size: 1.65rem; }
     .notebook-title span { color: var(--gold); }
     .subtitle { font-size: 0.72rem; color: rgba(255,255,255,0.5); letter-spacing: 0.1em; text-transform: uppercase; margin-top: 4px; }
-
     .header-badges { display: flex; gap: 8px; flex-wrap: wrap; }
-
-    .badge {
-      font-size: 0.68rem; padding: 5px 13px; border-radius: 20px;
-      font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase;
-    }
-
+    .badge { font-size: 0.68rem; padding: 5px 13px; border-radius: 20px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; }
     .badge-tts { background: var(--accent); color: white; }
-
-    .badge-live {
-      background: var(--green); color: white;
-      display: flex; align-items: center; gap: 5px;
-    }
-
+    .badge-live { background: var(--green); color: white; display: flex; align-items: center; gap: 5px; }
     .badge-live::before {
-      content: '';
-      display: inline-block; width: 7px; height: 7px;
-      border-radius: 50%; background: #7dffb3;
-      animation: blink 1.4s infinite;
+      content: ''; display: inline-block; width: 7px; height: 7px;
+      border-radius: 50%; background: #7dffb3; animation: blink 1.4s infinite;
     }
-
     @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
 
     /* CONTROLS */
     .controls-bar {
-      padding: 12px 88px;
-      background: rgba(26,26,46,0.04);
+      padding: 12px 88px; background: rgba(26,26,46,0.04);
       border-bottom: 1px solid var(--line);
       display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
       position: relative; z-index: 10;
     }
-
     .ctrl-label { font-size: 0.72rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.09em; }
-
     .ctrl-select {
       font-family: 'Sarabun', sans-serif; font-size: 0.78rem;
       padding: 5px 10px; border: 1px solid var(--line); border-radius: 4px;
       background: white; color: var(--ink); cursor: pointer;
     }
-
     .rate-wrap { display: flex; align-items: center; gap: 7px; font-size: 0.75rem; color: var(--muted); }
     .rate-wrap input[type=range] { width: 80px; accent-color: var(--accent); cursor: pointer; }
-
     .btn-refresh {
-      margin-left: auto;
-      background: var(--ink); color: white;
+      margin-left: auto; background: var(--ink); color: white;
       border: none; padding: 7px 18px; border-radius: 4px;
       font-family: 'Sarabun', sans-serif; font-size: 0.78rem; font-weight: 600;
       cursor: pointer; transition: background 0.2s, transform 0.15s;
       display: flex; align-items: center; gap: 6px;
     }
-
     .btn-refresh:hover { background: #2c2c4e; transform: translateY(-1px); }
     .btn-refresh.loading { opacity: 0.6; pointer-events: none; }
-
     .refresh-icon { display: inline-block; }
     .btn-refresh.loading .refresh-icon { animation: spin 0.7s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
 
     /* STATUS */
     .status-bar {
-      padding: 6px 88px; font-size: 0.7rem; color: var(--muted);
+      padding: 7px 88px; font-size: 0.7rem; color: var(--muted);
       border-bottom: 1px solid var(--line); background: rgba(0,0,0,0.015);
       position: relative; z-index: 10; display: flex; align-items: center; gap: 16px;
     }
-
     .status-dot { width: 7px; height: 7px; border-radius: 50%; background: #ccc; display: inline-block; margin-right: 5px; }
-    .status-dot.ok { background: var(--green); }
+    .status-dot.ok  { background: var(--green); }
     .status-dot.err { background: var(--accent); }
+    .status-dot.loading { background: var(--gold); animation: blink 0.8s infinite; }
 
     /* TABLE */
     .table-section { overflow-x: auto; position: relative; z-index: 2; }
-
-    table { width: 100%; border-collapse: collapse; min-width: 860px; }
-
+    table { width: 100%; border-collapse: collapse; min-width: 900px; }
     thead tr { background: var(--ink); color: white; }
-
     thead th {
       padding: 11px 10px; font-size: 0.68rem; font-weight: 700;
       letter-spacing: 0.08em; text-transform: uppercase; text-align: left;
       border-right: 1px solid rgba(255,255,255,0.08); white-space: nowrap;
     }
-
     thead th:first-child { padding-left: 24px; width: 46px; }
     thead th:nth-child(2) { width: 84px; }
-    thead th:nth-child(3) { min-width: 200px; }
-    thead th:nth-child(4) { min-width: 140px; }
+    thead th:nth-child(3) { min-width: 210px; }
+    thead th:nth-child(4) { min-width: 130px; }
     thead th:nth-child(5) { min-width: 160px; }
     thead th:nth-child(6), thead th:nth-child(7), thead th:nth-child(8) { min-width: 190px; }
 
@@ -185,18 +131,12 @@
       background: var(--ink); color: white; border-radius: 50%;
       align-items: center; justify-content: center; font-size: 0.67rem; font-weight: 700;
     }
-
     .date-cell { font-size: 0.72rem; color: var(--muted); white-space: nowrap; }
 
     .phrase-cell { display: flex; align-items: flex-start; gap: 8px; }
     .phrase-text { flex: 1; }
-
-    .english {
-      font-family: 'Playfair Display', serif; font-style: italic;
-      font-size: 1.02rem; color: var(--ink); line-height: 1.35;
-    }
-
-    .phonetic { font-size: 0.7rem; color: var(--muted); margin-top: 3px; }
+    .english { font-family: 'Playfair Display', serif; font-style: italic; font-size: 1.02rem; color: var(--ink); line-height: 1.35; }
+    .phonetic-small { font-size: 0.7rem; color: var(--muted); margin-top: 3px; }
     .meaning-th { font-size: 0.79rem; color: #3a3a3a; line-height: 1.55; }
 
     .speak-btn {
@@ -205,69 +145,59 @@
       cursor: pointer; display: flex; align-items: center; justify-content: center;
       font-size: 1rem; transition: all 0.2s; margin-top: 1px;
     }
-
     .speak-btn:hover { background: var(--gold); color: white; transform: scale(1.1); }
     .speak-btn.speaking { background: var(--accent); border-color: var(--accent); color: white; animation: pulse 0.55s infinite alternate; }
-
-    @keyframes pulse {
-      from { transform: scale(1); }
-      to   { transform: scale(1.12); box-shadow: 0 0 0 6px rgba(192,57,43,0); }
-    }
+    @keyframes pulse { from{transform:scale(1)} to{transform:scale(1.12)} }
 
     .examples-group { display: flex; flex-direction: column; gap: 6px; }
-
     .example-item {
       background: rgba(0,0,0,0.025); border-left: 3px solid var(--line);
       border-radius: 0 4px 4px 0; padding: 6px 8px; transition: border-color 0.2s;
     }
-
     .example-item:hover { border-color: var(--gold); }
-
-    .example-en {
-      font-size: 0.75rem; color: var(--blue); font-style: italic;
-      display: flex; align-items: flex-start; gap: 7px; flex-wrap: wrap;
-    }
-
+    .example-en { font-size: 0.75rem; color: var(--blue); font-style: italic; display: flex; align-items: flex-start; gap: 7px; flex-wrap: wrap; }
     .example-th { font-size: 0.71rem; color: var(--muted); margin-top: 3px; line-height: 1.45; }
 
     .speak-sm {
       flex-shrink: 0; background: none; border: 1px solid var(--blue);
       border-radius: 10px; padding: 2px 7px; font-size: 0.63rem; color: var(--blue);
-      cursor: pointer; transition: all 0.18s; font-family: 'Sarabun', sans-serif;
-      white-space: nowrap;
+      cursor: pointer; transition: all 0.18s; font-family: 'Sarabun', sans-serif; white-space: nowrap;
     }
-
     .speak-sm:hover { background: var(--blue); color: white; }
     .speak-sm.speaking { background: var(--accent); border-color: var(--accent); color: white; }
 
-    .loading-row td, .error-row td { text-align: center; padding: 40px; color: var(--muted); font-size: 0.85rem; }
-
+    .state-row td {
+      text-align: center; padding: 50px 20px;
+      color: var(--muted); font-size: 0.88rem; line-height: 1.8;
+    }
     .spinner {
-      display: inline-block; width: 18px; height: 18px;
+      display: inline-block; width: 20px; height: 20px;
       border: 2px solid var(--line); border-top-color: var(--gold);
       border-radius: 50%; animation: spin 0.7s linear infinite;
       vertical-align: middle; margin-right: 8px;
     }
+    .error-box { background: #fff5f5; border: 1px solid #fcc; border-radius: 8px; padding: 18px 24px; display: inline-block; text-align: left; max-width: 500px; }
+    .error-box strong { color: var(--accent); }
+    .error-box ol { margin: 10px 0 0 18px; font-size: 0.82rem; color: #555; line-height: 1.9; }
 
     .footer {
       background: var(--ink); color: rgba(255,255,255,0.4); text-align: center;
       padding: 15px; font-size: 0.68rem; letter-spacing: 0.09em; position: relative; z-index: 10;
     }
-
     .footer a { color: var(--gold); text-decoration: none; }
 
     @media (max-width: 640px) {
       .controls-bar, .status-bar { padding-left: 16px; padding-right: 16px; }
       .notebook::before { display: none; }
-      .header { padding-left: 16px; }
+      .header { padding-left: 20px; }
       .notebook-title { font-size: 1.2rem; }
     }
   </style>
 </head>
 <body>
-
 <div class="notebook">
 
+  <!-- HEADER -->
   <div class="header">
     <div class="header-inner">
       <div>
@@ -282,36 +212,35 @@
     <div class="header-stripe"></div>
   </div>
 
+  <!-- CONTROLS -->
   <div class="controls-bar">
     <span class="ctrl-label">🎙 เสียง</span>
-    <select class="ctrl-select" id="voiceSelect">
-      <option value="">กำลังโหลดเสียง...</option>
-    </select>
-
+    <select class="ctrl-select" id="voiceSelect"><option value="">กำลังโหลดเสียง...</option></select>
     <div class="rate-wrap">
       <span>ความเร็ว:</span>
       <input type="range" id="rateRange" min="0.5" max="1.5" step="0.1" value="0.85">
       <span id="rateVal">0.85×</span>
     </div>
-
     <button class="btn-refresh" id="refreshBtn" onclick="loadSheet()">
       <span class="refresh-icon">↻</span> อัปเดตข้อมูล
     </button>
   </div>
 
+  <!-- STATUS -->
   <div class="status-bar">
-    <span id="statusDot" class="status-dot"></span>
+    <span id="statusDot" class="status-dot loading"></span>
     <span id="statusText">กำลังโหลดข้อมูล...</span>
     <span id="rowCount" style="margin-left:auto;"></span>
   </div>
 
+  <!-- TABLE -->
   <div class="table-section">
-    <table id="mainTable">
+    <table>
       <thead>
         <tr>
           <th>#</th>
-          <th>วันที่เรียน</th>
-          <th>คำ / ประโยค</th>
+          <th>วันที่</th>
+          <th>คำ / ประโยค 🔊</th>
           <th>คำอ่าน</th>
           <th>ความหมาย (ไทย)</th>
           <th>ตัวอย่างที่ 1</th>
@@ -320,7 +249,7 @@
         </tr>
       </thead>
       <tbody id="tableBody">
-        <tr class="loading-row">
+        <tr class="state-row">
           <td colspan="8"><span class="spinner"></span>กำลังดึงข้อมูลจาก Google Sheets...</td>
         </tr>
       </tbody>
@@ -328,171 +257,187 @@
   </div>
 
   <div class="footer">
-    ข้อมูลจาก <a href="https://docs.google.com/spreadsheets/d/1eSWvDzZOJ4ZC7V84uym29MDIim5EFd22sJmYnKhj71w" target="_blank">Google Sheets ของคุณ</a>
-    &nbsp;·&nbsp; เสียงโดย Web Speech API &nbsp;·&nbsp; กด "อัปเดตข้อมูล" เพื่อซิงค์ล่าสุด
+    ข้อมูลจาก <a href="https://docs.google.com/spreadsheets/d/1eSWvDzZOJ4ZC7V84uym29MDIim5EFd22sJmYnKhj71w" target="_blank">Google Sheets</a>
+    &nbsp;·&nbsp; เสียงโดย Web Speech API (ต้องใช้ Chrome) &nbsp;·&nbsp; กด "อัปเดตข้อมูล" เพื่อซิงค์ล่าสุด
   </div>
 
 </div>
 
 <script>
-  const SHEET_ID = '1eSWvDzZOJ4ZC7V84uym29MDIim5EFd22sJmYnKhj71w';
-  const CSV_URL  = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=0`;
+// ── CONFIG ──────────────────────────────────────────────────────
+// Published CSV URL (ไม่มี CORS)
+const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRdsA1a9X5biJt-0TwVmcHV9e_kUlFipfYZfcCkHh6Nm6pNjKfO3NuzaisheO5SJf_xmcUA_iJ66aWM/pub?gid=0&single=true&output=csv';
 
-  // ── VOICES ──────────────────────────────────────────
-  let voices = [];
-  let currentBtn = null;
+// ── SPEECH ──────────────────────────────────────────────────────
+let voices = [], currentBtn = null;
 
-  function loadVoices() {
-    voices = speechSynthesis.getVoices();
-    const sel = document.getElementById('voiceSelect');
-    const enV = voices.filter(v => v.lang.startsWith('en'));
-    sel.innerHTML = '';
-    if (!enV.length) { sel.innerHTML = '<option>ไม่มีเสียงภาษาอังกฤษ</option>'; return; }
-    enV.forEach((v, i) => {
-      const o = document.createElement('option');
-      o.value = i;
-      o.textContent = `${v.name} (${v.lang})`;
-      if (v.lang === 'en-US') sel.value = i;
-      sel.appendChild(o);
-    });
-  }
-
-  speechSynthesis.onvoiceschanged = loadVoices;
-  loadVoices();
-
-  document.getElementById('rateRange').addEventListener('input', function() {
-    document.getElementById('rateVal').textContent = this.value + '×';
+function loadVoices() {
+  voices = speechSynthesis.getVoices();
+  const sel = document.getElementById('voiceSelect');
+  const enV = voices.filter(v => v.lang.startsWith('en'));
+  if (!enV.length) return;
+  sel.innerHTML = '';
+  enV.forEach((v, i) => {
+    const o = document.createElement('option');
+    o.value = i;
+    o.textContent = `${v.name} (${v.lang})`;
+    sel.appendChild(o);
+    if (v.lang === 'en-US' && v.name.toLowerCase().includes('female')) sel.value = i;
   });
-
-  function speak(text, btn) {
-    speechSynthesis.cancel();
-    if (currentBtn) { currentBtn.classList.remove('speaking'); currentBtn = null; }
-    if (btn._last === text) { btn._last = null; return; }
-    btn._last = text;
-
-    const u = new SpeechSynthesisUtterance(text);
-    const sel = document.getElementById('voiceSelect');
-    const enV = voices.filter(v => v.lang.startsWith('en'));
-    if (enV[sel.value]) u.voice = enV[sel.value];
-    u.rate = parseFloat(document.getElementById('rateRange').value);
-    u.pitch = 1;
-    btn.classList.add('speaking');
-    currentBtn = btn;
-    u.onend = u.onerror = () => { btn.classList.remove('speaking'); btn._last = null; if (currentBtn === btn) currentBtn = null; };
-    speechSynthesis.speak(u);
+  // fallback: first en-US
+  if (!sel.value) {
+    const idx = enV.findIndex(v => v.lang === 'en-US');
+    if (idx >= 0) sel.value = idx;
   }
+}
 
-  // ── CSV PARSER ──────────────────────────────────────
-  function parseCSV(txt) {
-    const rows = []; let row = [], f = '', q = false;
-    for (let i = 0; i < txt.length; i++) {
-      const c = txt[i];
-      if (c === '"') { if (q && txt[i+1] === '"') { f += '"'; i++; } else q = !q; }
-      else if (c === ',' && !q) { row.push(f); f = ''; }
-      else if ((c === '\n' || c === '\r') && !q) {
-        if (c === '\r' && txt[i+1] === '\n') i++;
-        row.push(f); f = ''; rows.push(row); row = [];
-      } else f += c;
-    }
-    if (f || row.length) { row.push(f); rows.push(row); }
-    return rows;
+speechSynthesis.onvoiceschanged = loadVoices;
+setTimeout(loadVoices, 300);
+
+document.getElementById('rateRange').addEventListener('input', function() {
+  document.getElementById('rateVal').textContent = this.value + '×';
+});
+
+function speak(text, btn) {
+  speechSynthesis.cancel();
+  if (currentBtn) { currentBtn.classList.remove('speaking'); }
+  if (currentBtn === btn && btn._speaking) { currentBtn = null; btn._speaking = false; return; }
+
+  const u = new SpeechSynthesisUtterance(text);
+  const sel = document.getElementById('voiceSelect');
+  const enV = voices.filter(v => v.lang.startsWith('en'));
+  if (enV[sel.value]) u.voice = enV[sel.value];
+  u.rate  = parseFloat(document.getElementById('rateRange').value);
+  u.pitch = 1;
+
+  btn.classList.add('speaking');
+  btn._speaking = true;
+  currentBtn = btn;
+
+  u.onend = u.onerror = () => {
+    btn.classList.remove('speaking');
+    btn._speaking = false;
+    if (currentBtn === btn) currentBtn = null;
+  };
+  speechSynthesis.speak(u);
+}
+
+// ── CSV PARSER ──────────────────────────────────────────────────
+function parseCSV(txt) {
+  const rows = []; let row = [], f = '', q = false;
+  for (let i = 0; i < txt.length; i++) {
+    const c = txt[i];
+    if (c === '"') {
+      if (q && txt[i+1] === '"') { f += '"'; i++; } else q = !q;
+    } else if (c === ',' && !q) {
+      row.push(f); f = '';
+    } else if ((c === '\n' || c === '\r') && !q) {
+      if (c === '\r' && txt[i+1] === '\n') i++;
+      row.push(f); f = ''; rows.push(row); row = [];
+    } else f += c;
   }
+  if (f || row.length) { row.push(f); rows.push(row); }
+  return rows;
+}
 
-  // ── BUILD CELLS ─────────────────────────────────────
-  function esc(s) { return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
+// ── HTML HELPERS ────────────────────────────────────────────────
+function esc(s) {
+  return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+                .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
 
-  function exCell(enTxt, thTxt) {
-    if (!enTxt && !thTxt) return '<td></td>';
-    const safeEn = esc(enTxt);
-    const rawEn  = (enTxt||'').replace(/\n/g,'<br>');
-    return `<td><div class="examples-group"><div class="example-item">
-      <div class="example-en">
-        <span>${rawEn}</span>
-        <button class="speak-sm" onclick="speak('${safeEn}',this)">▶ ฟัง</button>
-      </div>
-      ${thTxt ? `<div class="example-th">${esc(thTxt).replace(/\n/g,'<br>')}</div>` : ''}
-    </div></div></td>`;
-  }
+function exCell(enTxt, thTxt) {
+  enTxt = (enTxt||'').trim(); thTxt = (thTxt||'').trim();
+  if (!enTxt && !thTxt) return '<td></td>';
+  return `<td><div class="examples-group"><div class="example-item">
+    <div class="example-en">
+      <span>${esc(enTxt).replace(/\n/g,'<br>')}</span>
+      <button class="speak-sm" onclick="speak('${esc(enTxt)}',this)">▶ ฟัง</button>
+    </div>
+    ${thTxt ? `<div class="example-th">${esc(thTxt).replace(/\n/g,'<br>')}</div>` : ''}
+  </div></div></td>`;
+}
 
-  function buildRow(c, i) {
-    const eng = (c[2]||'').trim(); if (!eng) return '';
-    const num = c[0]||(i+1), date=c[1]||'', phon=c[3]||'', mean=c[4]||'';
-    const safeEng = esc(eng);
-    return `<tr>
-      <td><span class="row-num">${num}</span></td>
-      <td class="date-cell">${esc(date)}</td>
-      <td>
-        <div class="phrase-cell">
-          <div class="phrase-text">
-            <div class="english">${esc(eng)}</div>
-            ${phon ? `<div class="phonetic">${esc(phon)}</div>` : ''}
-          </div>
-          <button class="speak-btn" onclick="speak('${safeEng}',this)" title="ฟังเสียง">🔊</button>
+function buildRow(c, i) {
+  const eng = (c[2]||'').trim();
+  if (!eng) return '';
+  const num  = (c[0]||'').trim() || (i+1);
+  const date = (c[1]||'').trim();
+  const phon = (c[3]||'').trim();
+  const mean = (c[4]||'').trim();
+  return `<tr>
+    <td><span class="row-num">${esc(String(num))}</span></td>
+    <td class="date-cell">${esc(date)}</td>
+    <td>
+      <div class="phrase-cell">
+        <div class="phrase-text">
+          <div class="english">${esc(eng)}</div>
+          ${phon ? `<div class="phonetic-small">${esc(phon)}</div>` : ''}
         </div>
-      </td>
-      <td class="phonetic" style="color:var(--muted);font-size:0.78rem;">${esc(phon)}</td>
-      <td class="meaning-th">${esc(mean).replace(/\n/g,'<br>')}</td>
-      ${exCell(c[5], c[6])}
-      ${exCell(c[7], c[8])}
-      ${exCell(c[9], c[10])}
-    </tr>`;
-  }
+        <button class="speak-btn" onclick="speak('${esc(eng)}',this)" title="ฟังเสียง">🔊</button>
+      </div>
+    </td>
+    <td style="font-size:0.78rem;color:var(--muted);">${esc(phon)}</td>
+    <td class="meaning-th">${esc(mean).replace(/\n/g,'<br>')}</td>
+    ${exCell(c[5], c[6])}
+    ${exCell(c[7], c[8])}
+    ${exCell(c[9], c[10])}
+  </tr>`;
+}
 
-  // ── LOAD SHEET ──────────────────────────────────────
-  async function loadSheet() {
-    const btn  = document.getElementById('refreshBtn');
-    const body = document.getElementById('tableBody');
-    const dot  = document.getElementById('statusDot');
-    const stxt = document.getElementById('statusText');
-    const rcnt = document.getElementById('rowCount');
+// ── LOAD SHEET ──────────────────────────────────────────────────
+async function loadSheet() {
+  const btn  = document.getElementById('refreshBtn');
+  const body = document.getElementById('tableBody');
+  const dot  = document.getElementById('statusDot');
+  const stxt = document.getElementById('statusText');
+  const rcnt = document.getElementById('rowCount');
 
-    btn.classList.add('loading');
-    stxt.textContent = 'กำลังดึงข้อมูล...';
-    dot.className = 'status-dot';
-    body.innerHTML = `<tr class="loading-row"><td colspan="8"><span class="spinner"></span>กำลังโหลด...</td></tr>`;
+  btn.classList.add('loading');
+  dot.className = 'status-dot loading';
+  stxt.textContent = 'กำลังดึงข้อมูล...';
+  rcnt.textContent = '';
+  body.innerHTML = `<tr class="state-row"><td colspan="8"><span class="spinner"></span>กำลังโหลด...</td></tr>`;
 
-    const proxies = [
-      `https://api.allorigins.win/raw?url=${encodeURIComponent(CSV_URL)}`,
-      `https://corsproxy.io/?${encodeURIComponent(CSV_URL)}`
-    ];
+  try {
+    const res = await fetch(CSV_URL, { cache: 'no-store' });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const text = await res.text();
 
-    let text = null, lastErr = null;
+    if (!text || text.trim().length < 5) throw new Error('ไม่มีข้อมูล');
 
-    for (const url of proxies) {
-      try {
-        const res = await fetch(url);
-        if (!res.ok) throw new Error('HTTP ' + res.status);
-        text = await res.text();
-        if (text && text.includes(',')) break;
-      } catch(e) { lastErr = e; text = null; }
-    }
-
-    if (!text) {
-      body.innerHTML = `<tr class="error-row"><td colspan="8">
-        ❌ โหลดไม่สำเร็จ: ${lastErr ? lastErr.message : 'Unknown'}<br>
-        <small style="color:var(--muted);margin-top:6px;display:block;">
-          ตรวจสอบว่า Google Sheet ตั้งค่าเป็น <b>"Anyone with the link"</b> แล้วลองใหม่อีกครั้ง
-        </small>
-      </td></tr>`;
-      dot.className = 'status-dot err';
-      stxt.textContent = 'โหลดไม่สำเร็จ';
-      btn.classList.remove('loading');
-      return;
-    }
-
-    const rows = parseCSV(text).slice(1).filter(r => r.some(c => c.trim()));
-    let html = rows.map((r,i) => buildRow(r,i)).join('');
-    body.innerHTML = html || `<tr class="error-row"><td colspan="8">ไม่พบข้อมูล</td></tr>`;
+    const rows = parseCSV(text).slice(1).filter(r => r.some(c => (c||'').trim()));
+    const html = rows.map((r,i) => buildRow(r,i)).join('');
+    body.innerHTML = html || `<tr class="state-row"><td colspan="8">ไม่พบข้อมูลใน Sheet</td></tr>`;
 
     const count = rows.filter(r => (r[2]||'').trim()).length;
-    dot.className = 'status-dot ok';
+    dot.className  = 'status-dot ok';
     stxt.textContent = `โหลดสำเร็จ — ${new Date().toLocaleString('th-TH')}`;
     rcnt.textContent = `📚 ${count} คำ/ประโยค`;
-    btn.classList.remove('loading');
     loadVoices();
-  }
 
-  loadSheet();
+  } catch (err) {
+    console.error(err);
+    dot.className  = 'status-dot err';
+    stxt.textContent = `โหลดไม่สำเร็จ: ${err.message}`;
+    body.innerHTML = `<tr class="state-row"><td colspan="8">
+      <div class="error-box">
+        <strong>⚠️ ดึงข้อมูลไม่ได้</strong><br>
+        <small>${err.message}</small>
+        <ol>
+          <li>ตรวจสอบว่า Google Sheet ถูก Publish แล้ว<br><small>(File → Share → Publish to web)</small></li>
+          <li>ลองกดปุ่ม <b>อัปเดตข้อมูล</b> อีกครั้ง</li>
+          <li>ต้องเปิดไฟล์นี้ใน <b>Chrome</b> หรือ <b>Edge</b></li>
+        </ol>
+      </div>
+    </td></tr>`;
+  } finally {
+    btn.classList.remove('loading');
+  }
+}
+
+// Auto load on open
+loadSheet();
 </script>
 </body>
 </html>
