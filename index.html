@@ -352,7 +352,7 @@ function exCell(enTxt, thTxt) {
   return `<td><div class="examples-group"><div class="example-item">
     <div class="example-en">
       <span>${esc(enTxt).replace(/\n/g,'<br>')}</span>
-      <button class="speak-sm" onclick="speak('${esc(enTxt)}',this)">▶ ฟัง</button>
+      <button class="speak-sm" data-text="${esc(enTxt)}">▶ ฟัง</button>
     </div>
     ${thTxt ? `<div class="example-th">${esc(thTxt).replace(/\n/g,'<br>')}</div>` : ''}
   </div></div></td>`;
@@ -374,7 +374,7 @@ function buildRow(c, i) {
           <div class="english">${esc(eng)}</div>
           ${phon ? `<div class="phonetic-small">${esc(phon)}</div>` : ''}
         </div>
-        <button class="speak-btn" onclick="speak('${esc(eng)}',this)" title="ฟังเสียง">🔊</button>
+        <button class="speak-btn" data-text="${esc(eng)}" title="ฟังเสียง">🔊</button>
       </div>
     </td>
     <td style="font-size:0.78rem;color:var(--muted);">${esc(phon)}</td>
@@ -435,6 +435,14 @@ async function loadSheet() {
     btn.classList.remove('loading');
   }
 }
+
+// ── EVENT DELEGATION ────────────────────────────────────────────
+document.getElementById('tableBody').addEventListener('click', function(e) {
+  const btn = e.target.closest('.speak-btn, .speak-sm');
+  if (!btn) return;
+  const text = btn.dataset.text;
+  if (text) speak(text, btn);
+});
 
 // Auto load on open
 loadSheet();
