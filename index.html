@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>บันทึกการเรียนภาษาอังกฤษ</title>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Sarabun:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
   <style>
     :root {
       --ink: #1a1a2e;
@@ -34,7 +35,6 @@
       overflow: hidden; position: relative;
     }
 
-
     /* HEADER */
     .header {
       background: var(--ink); color: white;
@@ -58,6 +58,30 @@
       border-radius: 50%; background: #7dffb3; animation: blink 1.4s infinite;
     }
     @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+    /* NAV TABS */
+    .nav-tabs {
+      display: flex; gap: 0;
+      background: rgba(26,26,46,0.06);
+      border-bottom: 2px solid var(--line);
+      padding: 0 88px;
+      position: relative; z-index: 10;
+    }
+    .nav-tab {
+      padding: 12px 22px;
+      font-size: 0.78rem; font-weight: 700;
+      color: var(--muted);
+      border: none; background: none;
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      margin-bottom: -2px;
+      transition: color 0.2s, border-color 0.2s;
+      font-family: 'Sarabun', sans-serif;
+      display: flex; align-items: center; gap: 6px;
+      letter-spacing: 0.04em;
+    }
+    .nav-tab:hover { color: var(--ink); }
+    .nav-tab.active { color: var(--ink); border-bottom-color: var(--gold); }
 
     /* CONTROLS */
     .controls-bar {
@@ -176,6 +200,120 @@
     .error-box strong { color: var(--accent); }
     .error-box ol { margin: 10px 0 0 18px; font-size: 0.82rem; color: #555; line-height: 1.9; }
 
+    /* ── ANALYTICS PAGE ── */
+    .analytics-page {
+      display: none;
+      padding: 36px 88px 60px;
+    }
+    .analytics-page.active { display: block; }
+
+    .analytics-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.25rem; color: var(--ink);
+      margin-bottom: 6px;
+    }
+    .analytics-sub {
+      font-size: 0.75rem; color: var(--muted);
+      margin-bottom: 30px; letter-spacing: 0.05em;
+    }
+
+    .stat-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 16px;
+      margin-bottom: 36px;
+    }
+    .stat-card {
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 18px 20px;
+      text-align: center;
+    }
+    .stat-card .stat-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem; font-weight: 700;
+      color: var(--ink); line-height: 1;
+    }
+    .stat-card .stat-label {
+      font-size: 0.7rem; color: var(--muted);
+      text-transform: uppercase; letter-spacing: 0.09em;
+      margin-top: 8px;
+    }
+    .stat-card .stat-accent { color: var(--gold); }
+    .stat-card .stat-accent-green { color: var(--green); }
+
+    .chart-section {
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 24px 24px 20px;
+      margin-bottom: 24px;
+    }
+    .chart-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 20px; flex-wrap: wrap; gap: 10px;
+    }
+    .chart-title {
+      font-size: 0.85rem; font-weight: 700; color: var(--ink);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .chart-hint { font-size: 0.7rem; color: var(--muted); }
+
+    .chart-toggle-group { display: flex; gap: 6px; }
+    .chart-toggle {
+      font-family: 'Sarabun', sans-serif;
+      font-size: 0.68rem; font-weight: 700;
+      padding: 4px 12px; border-radius: 20px;
+      border: 1px solid var(--line);
+      background: white; color: var(--muted);
+      cursor: pointer; transition: all 0.18s;
+      text-transform: uppercase; letter-spacing: 0.07em;
+    }
+    .chart-toggle.active { background: var(--ink); color: white; border-color: var(--ink); }
+
+    .chart-wrap { position: relative; width: 100%; }
+
+    .heatmap-grid {
+      display: grid;
+      gap: 4px;
+      margin-top: 8px;
+    }
+    .heatmap-row { display: flex; align-items: center; gap: 4px; }
+    .heatmap-label { font-size: 0.65rem; color: var(--muted); width: 28px; text-align: right; flex-shrink: 0; }
+    .heatmap-cell {
+      width: 18px; height: 18px; border-radius: 3px;
+      background: #f0e8d8;
+      transition: transform 0.15s;
+      cursor: default;
+      position: relative;
+    }
+    .heatmap-cell:hover { transform: scale(1.3); z-index: 5; }
+    .heatmap-cell[data-count="0"] { background: #f0e8d8; }
+
+    .heatmap-legend { display: flex; align-items: center; gap: 6px; margin-top: 10px; font-size: 0.65rem; color: var(--muted); }
+    .heatmap-legend-swatch { width: 14px; height: 14px; border-radius: 2px; }
+
+    .streak-bar {
+      display: flex; align-items: center; gap: 10px;
+      background: linear-gradient(90deg, rgba(201,146,42,0.08), rgba(201,146,42,0.02));
+      border-left: 3px solid var(--gold);
+      border-radius: 0 6px 6px 0;
+      padding: 12px 18px; margin-bottom: 24px;
+    }
+    .streak-icon { font-size: 1.3rem; }
+    .streak-text { font-size: 0.82rem; color: var(--ink); line-height: 1.5; }
+    .streak-text strong { color: var(--gold); }
+
+    .analytics-loading {
+      text-align: center; padding: 80px 20px;
+      color: var(--muted); font-size: 0.9rem;
+    }
+
+    /* PAGE VISIBILITY */
+    .page { display: none; }
+    .page.active { display: block; }
+
     .footer {
       background: var(--ink); color: rgba(255,255,255,0.4); text-align: center;
       padding: 15px; font-size: 0.68rem; letter-spacing: 0.09em; position: relative; z-index: 10;
@@ -183,10 +321,11 @@
     .footer a { color: var(--gold); text-decoration: none; }
 
     @media (max-width: 640px) {
-      .controls-bar, .status-bar { padding-left: 16px; padding-right: 16px; }
+      .controls-bar, .status-bar, .nav-tabs { padding-left: 16px; padding-right: 16px; }
       .notebook::before { display: none; }
       .header { padding-left: 20px; }
       .notebook-title { font-size: 1.2rem; }
+      .analytics-page { padding: 24px 16px 40px; }
     }
   </style>
 </head>
@@ -208,47 +347,76 @@
     <div class="header-stripe"></div>
   </div>
 
-  <!-- CONTROLS -->
-  <div class="controls-bar">
-    <span class="ctrl-label">🎙 เสียง</span>
-    <select class="ctrl-select" id="voiceSelect"><option value="">กำลังโหลดเสียง...</option></select>
-    <div class="rate-wrap">
-      <span>ความเร็ว:</span>
-      <input type="range" id="rateRange" min="0.5" max="1.5" step="0.1" value="0.85">
-      <span id="rateVal">0.85×</span>
-    </div>
-    <button class="btn-refresh" id="refreshBtn" onclick="loadSheet()">
-      <span class="refresh-icon">↻</span> อัปเดตข้อมูล
+  <!-- NAV TABS -->
+  <div class="nav-tabs">
+    <button class="nav-tab active" id="tab-vocab" onclick="switchTab('vocab')">
+      📚 คำศัพท์
+    </button>
+    <button class="nav-tab" id="tab-analytics" onclick="switchTab('analytics')">
+      📊 การเรียนรู้
     </button>
   </div>
 
-  <!-- STATUS -->
-  <div class="status-bar">
-    <span id="statusDot" class="status-dot loading"></span>
-    <span id="statusText">กำลังโหลดข้อมูล...</span>
-    <span id="rowCount" style="margin-left:auto;"></span>
+  <!-- ── PAGE: VOCAB ── -->
+  <div id="page-vocab" class="page active">
+    <!-- CONTROLS -->
+    <div class="controls-bar">
+      <span class="ctrl-label">🎙 เสียง</span>
+      <select class="ctrl-select" id="voiceSelect"><option value="">กำลังโหลดเสียง...</option></select>
+      <div class="rate-wrap">
+        <span>ความเร็ว:</span>
+        <input type="range" id="rateRange" min="0.5" max="1.5" step="0.1" value="0.85">
+        <span id="rateVal">0.85×</span>
+      </div>
+      <button class="btn-refresh" id="refreshBtn" onclick="loadSheet()">
+        <span class="refresh-icon">↻</span> อัปเดตข้อมูล
+      </button>
+    </div>
+
+    <!-- STATUS -->
+    <div class="status-bar">
+      <span id="statusDot" class="status-dot loading"></span>
+      <span id="statusText">กำลังโหลดข้อมูล...</span>
+      <span id="rowCount" style="margin-left:auto;"></span>
+    </div>
+
+    <!-- TABLE -->
+    <div class="table-section">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>วันที่</th>
+            <th>คำ / ประโยค 🔊</th>
+            <th>ความหมาย (ไทย)</th>
+            <th>ตัวอย่างที่ 1</th>
+            <th>ตัวอย่างที่ 2</th>
+            <th>ตัวอย่างที่ 3</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody">
+          <tr class="state-row">
+            <td colspan="8"><span class="spinner"></span>กำลังดึงข้อมูลจาก Google Sheets...</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 
-  <!-- TABLE -->
-  <div class="table-section">
-    <table>
-      <thead>
-        <tr>
-          <th>#</th>
-          <th>วันที่</th>
-          <th>คำ / ประโยค 🔊</th>
-          <th>ความหมาย (ไทย)</th>
-          <th>ตัวอย่างที่ 1</th>
-          <th>ตัวอย่างที่ 2</th>
-          <th>ตัวอย่างที่ 3</th>
-        </tr>
-      </thead>
-      <tbody id="tableBody">
-        <tr class="state-row">
-          <td colspan="8"><span class="spinner"></span>กำลังดึงข้อมูลจาก Google Sheets...</td>
-        </tr>
-      </tbody>
-    </table>
+  <!-- ── PAGE: ANALYTICS ── -->
+  <div id="page-analytics" class="page">
+    <div class="analytics-page active">
+
+      <div class="analytics-title">📊 สถิติการเรียนรู้</div>
+      <div class="analytics-sub">วิเคราะห์ความก้าวหน้าจากข้อมูลใน Google Sheets</div>
+
+      <div id="analyticsContent">
+        <div class="analytics-loading">
+          <span class="spinner"></span>กำลังโหลดข้อมูล...
+        </div>
+      </div>
+
+    </div>
   </div>
 
   <div class="footer">
@@ -259,9 +427,16 @@
 </div>
 
 <script>
-// ── CONFIG ──────────────────────────────────────────────────────
-// Published CSV URL (ไม่มี CORS)
 const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRdsA1a9X5biJt-0TwVmcHV9e_kUlFipfYZfcCkHh6Nm6pNjKfO3NuzaisheO5SJf_xmcUA_iJ66aWM/pub?gid=0&single=true&output=csv';
+
+// ── TAB SWITCHING ──────────────────────────────────────────────
+function switchTab(tab) {
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  document.getElementById('page-' + tab).classList.add('active');
+  if (tab === 'analytics' && window._allRows) renderAnalytics(window._allRows);
+}
 
 // ── SPEECH ──────────────────────────────────────────────────────
 let voices = [], currentBtn = null;
@@ -279,7 +454,6 @@ function loadVoices() {
     sel.appendChild(o);
     if (v.lang === 'en-US' && v.name.toLowerCase().includes('female')) sel.value = i;
   });
-  // fallback: first en-US
   if (!sel.value) {
     const idx = enV.findIndex(v => v.lang === 'en-US');
     if (idx >= 0) sel.value = idx;
@@ -293,9 +467,7 @@ document.getElementById('rateRange').addEventListener('input', function() {
   document.getElementById('rateVal').textContent = this.value + '×';
 });
 
-// แยกข้อความ a: / b: เป็น segments พร้อม speaker label
 function parseDialog(text) {
-  // split on "a :" or "b :" prefix (case-insensitive)
   const parts = text.split(/(?=\b[ab]\s*:)/i).map(s => s.trim()).filter(Boolean);
   if (parts.length <= 1) return [{ speaker: 'a', line: text }];
   return parts.map(p => {
@@ -314,19 +486,15 @@ function speakDialog(segments, idx, btn, rate, enV, voiceIdx) {
   }
   const seg = segments[idx];
   const u = new SpeechSynthesisUtterance(seg.line);
-
-  // A = normal pitch, B = higher pitch (different speaker feel)
   if (seg.speaker === 'a') {
     u.pitch = 0.85;
     if (enV[voiceIdx]) u.voice = enV[voiceIdx];
   } else {
     u.pitch = 1.35;
-    // try to pick opposite gender voice for B
     const alt = enV.find((v,i) => i !== voiceIdx);
     u.voice = alt ? alt : (enV[voiceIdx] || null);
   }
   u.rate = rate;
-
   u.onend  = () => speakDialog(segments, idx + 1, btn, rate, enV, voiceIdx);
   u.onerror = () => {
     btn.classList.remove('speaking');
@@ -340,16 +508,13 @@ function speak(text, btn) {
   speechSynthesis.cancel();
   if (currentBtn) { currentBtn.classList.remove('speaking'); }
   if (currentBtn === btn && btn._speaking) { currentBtn = null; btn._speaking = false; return; }
-
   const sel    = document.getElementById('voiceSelect');
   const enV    = voices.filter(v => v.lang.startsWith('en'));
   const rate   = parseFloat(document.getElementById('rateRange').value);
   const voiceIdx = parseInt(sel.value) || 0;
-
   btn.classList.add('speaking');
   btn._speaking = true;
   currentBtn = btn;
-
   const segments = parseDialog(text);
   speakDialog(segments, 0, btn, rate, enV, voiceIdx);
 }
@@ -372,7 +537,6 @@ function parseCSV(txt) {
   return rows;
 }
 
-// ── HTML HELPERS ────────────────────────────────────────────────
 function esc(s) {
   return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
                 .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
@@ -434,10 +598,11 @@ async function loadSheet() {
     const res = await fetch(CSV_URL, { cache: 'no-store' });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const text = await res.text();
-
     if (!text || text.trim().length < 5) throw new Error('ไม่มีข้อมูล');
 
     const rows = parseCSV(text).slice(1).filter(r => r.some(c => (c||'').trim()));
+    window._allRows = rows;
+
     const html = rows.map((r,i) => buildRow(r,i)).join('');
     body.innerHTML = html || `<tr class="state-row"><td colspan="8">ไม่พบข้อมูลใน Sheet</td></tr>`;
 
@@ -446,6 +611,11 @@ async function loadSheet() {
     stxt.textContent = `โหลดสำเร็จ — ${new Date().toLocaleString('th-TH')}`;
     rcnt.textContent = `📚 ${count} คำ/ประโยค`;
     loadVoices();
+
+    // Re-render analytics if on that tab
+    if (document.getElementById('page-analytics').classList.contains('active')) {
+      renderAnalytics(rows);
+    }
 
   } catch (err) {
     console.error(err);
@@ -475,7 +645,420 @@ document.getElementById('tableBody').addEventListener('click', function(e) {
   if (text) speak(text, btn);
 });
 
-// Auto load on open
+// ── ANALYTICS ───────────────────────────────────────────────────
+
+let barChartInstance = null;
+let cumulChartInstance = null;
+let currentBarView = 'daily'; // 'daily' | 'weekly' | 'monthly'
+
+function parseDate(str) {
+  if (!str) return null;
+  // Support: DD/MM/YYYY, YYYY-MM-DD, D/M/YY, etc.
+  str = str.trim();
+  let m;
+  // DD/MM/YYYY or D/M/YYYY
+  m = str.match(/^(\d{1,2})\/(\d{1,2})\/(\d{2,4})$/);
+  if (m) {
+    let y = parseInt(m[3]);
+    if (y < 100) y += 2000;
+    return new Date(y, parseInt(m[2])-1, parseInt(m[1]));
+  }
+  // YYYY-MM-DD
+  m = str.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (m) return new Date(parseInt(m[1]), parseInt(m[2])-1, parseInt(m[3]));
+  // Try native
+  const d = new Date(str);
+  return isNaN(d) ? null : d;
+}
+
+function fmt(d, mode) {
+  if (!d) return 'ไม่ระบุ';
+  if (mode === 'daily')   return `${d.getDate()}/${d.getMonth()+1}/${d.getFullYear()}`;
+  if (mode === 'monthly') return ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'][d.getMonth()] + ' ' + d.getFullYear();
+  // weekly: week start (Monday)
+  const day = d.getDay();
+  const diff = d.getDate() - day + (day === 0 ? -6 : 1);
+  const mon = new Date(d.setDate(diff));
+  return `สัปดาห์ ${mon.getDate()}/${mon.getMonth()+1}`;
+}
+
+function groupByDate(rows, mode) {
+  const map = new Map();
+  rows.forEach(r => {
+    const eng = (r[2]||'').trim();
+    if (!eng) return;
+    const d = parseDate(r[1]);
+    const key = d ? fmt(d, mode) : 'ไม่ระบุวันที่';
+    const sortKey = d ? d.getTime() : 0;
+    if (!map.has(key)) map.set(key, { count: 0, sortKey });
+    map.get(key).count++;
+  });
+  return [...map.entries()]
+    .sort((a,b) => a[1].sortKey - b[1].sortKey)
+    .map(([label, v]) => ({ label, count: v.count }));
+}
+
+function calcStreak(rows) {
+  const dateCounts = new Map();
+  rows.forEach(r => {
+    const eng = (r[2]||'').trim();
+    if (!eng) return;
+    const d = parseDate(r[1]);
+    if (!d) return;
+    const key = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    dateCounts.set(key, (dateCounts.get(key)||0) + 1);
+  });
+  const days = [...dateCounts.keys()].sort();
+  if (!days.length) return { current: 0, max: 0, activeDays: 0 };
+
+  let maxStreak = 1, curStreak = 1;
+  for (let i = 1; i < days.length; i++) {
+    const prev = new Date(days[i-1]);
+    const curr = new Date(days[i]);
+    const diff = (curr - prev) / 86400000;
+    if (diff === 1) { curStreak++; maxStreak = Math.max(maxStreak, curStreak); }
+    else curStreak = 1;
+  }
+
+  // Current streak from today backwards
+  const todayStr = (() => { const n = new Date(); return `${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,'0')}-${String(n.getDate()).padStart(2,'0')}`; })();
+  let streak = 0;
+  const daySet = new Set(days);
+  let check = new Date(todayStr);
+  while (daySet.has(`${check.getFullYear()}-${String(check.getMonth()+1).padStart(2,'0')}-${String(check.getDate()).padStart(2,'0')}`)) {
+    streak++;
+    check.setDate(check.getDate() - 1);
+  }
+
+  return { current: streak, max: maxStreak, activeDays: days.length };
+}
+
+function buildHeatmap(rows) {
+  const dateCounts = new Map();
+  rows.forEach(r => {
+    const eng = (r[2]||'').trim();
+    if (!eng) return;
+    const d = parseDate(r[1]);
+    if (!d) return;
+    const key = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    dateCounts.set(key, (dateCounts.get(key)||0) + 1);
+  });
+
+  const maxCount = Math.max(...dateCounts.values(), 1);
+
+  // Build last 52 weeks of calendar heatmap
+  const today = new Date();
+  // Start from 51 weeks ago, on Sunday
+  const startDay = new Date(today);
+  startDay.setDate(today.getDate() - 363);
+  // Align to Sunday
+  startDay.setDate(startDay.getDate() - startDay.getDay());
+
+  const weeks = [];
+  let d = new Date(startDay);
+  while (d <= today) {
+    const week = [];
+    for (let i = 0; i < 7; i++) {
+      const key = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+      week.push({ date: new Date(d), key, count: dateCounts.get(key) || 0 });
+      d.setDate(d.getDate() + 1);
+    }
+    weeks.push(week);
+  }
+
+  const dayLabels = ['อา','จ','อ','พ','พฤ','ศ','ส'];
+  const months = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+
+  function cellColor(count) {
+    if (count === 0) return '#f0e8d8';
+    const ratio = count / maxCount;
+    if (ratio < 0.25) return '#f5c891';
+    if (ratio < 0.5)  return '#e8a838';
+    if (ratio < 0.75) return '#c9922a';
+    return '#1a1a2e';
+  }
+
+  // Month labels row
+  let monthLabels = '<div style="display:flex;gap:4px;padding-left:32px;margin-bottom:2px;">';
+  let lastMonth = -1;
+  weeks.forEach((week, wi) => {
+    const m = week[0].date.getMonth();
+    if (m !== lastMonth) {
+      monthLabels += `<div style="font-size:0.6rem;color:var(--muted);width:18px;text-align:center;overflow:visible;white-space:nowrap">${months[m]}</div>`;
+      lastMonth = m;
+    } else {
+      monthLabels += `<div style="width:18px;"></div>`;
+    }
+  });
+  monthLabels += '</div>';
+
+  // Grid rows (Sun=0..Sat=6)
+  let grid = '<div style="display:flex;gap:0;">';
+  // Day labels column
+  grid += '<div style="display:flex;flex-direction:column;gap:4px;margin-right:4px;padding-top:0px;">';
+  dayLabels.forEach(l => {
+    grid += `<div style="height:18px;width:24px;text-align:right;font-size:0.6rem;color:var(--muted);line-height:18px;">${l}</div>`;
+  });
+  grid += '</div>';
+
+  // Weeks columns
+  weeks.forEach(week => {
+    grid += '<div style="display:flex;flex-direction:column;gap:4px;">';
+    week.forEach(cell => {
+      const dateStr = `${cell.date.getDate()}/${cell.date.getMonth()+1}/${cell.date.getFullYear()}`;
+      const title = cell.count > 0 ? `${dateStr}: ${cell.count} คำ` : dateStr;
+      grid += `<div class="heatmap-cell" style="background:${cellColor(cell.count)};" title="${title}" data-count="${cell.count}"></div>`;
+    });
+    grid += '</div>';
+  });
+  grid += '</div>';
+
+  return `
+    <div style="overflow-x:auto;padding-bottom:4px;">
+      ${monthLabels}
+      ${grid}
+      <div class="heatmap-legend">
+        <span>น้อย</span>
+        <div class="heatmap-legend-swatch" style="background:#f0e8d8;border:1px solid var(--line);"></div>
+        <div class="heatmap-legend-swatch" style="background:#f5c891;"></div>
+        <div class="heatmap-legend-swatch" style="background:#e8a838;"></div>
+        <div class="heatmap-legend-swatch" style="background:#c9922a;"></div>
+        <div class="heatmap-legend-swatch" style="background:#1a1a2e;"></div>
+        <span>มาก</span>
+      </div>
+    </div>
+  `;
+}
+
+function renderAnalytics(rows) {
+  const validRows = rows.filter(r => (r[2]||'').trim());
+  const totalWords = validRows.length;
+  const streak = calcStreak(rows);
+
+  // Avg per active day
+  const avgPerDay = streak.activeDays > 0 ? (totalWords / streak.activeDays).toFixed(1) : 0;
+
+  // Best day
+  const dailyData = groupByDate(rows, 'daily');
+  const bestDay = dailyData.reduce((a,b) => b.count > a.count ? b : a, { label: '-', count: 0 });
+
+  const html = `
+    <div class="stat-cards">
+      <div class="stat-card">
+        <div class="stat-num stat-accent">${totalWords}</div>
+        <div class="stat-label">คำทั้งหมด</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">${streak.activeDays}</div>
+        <div class="stat-label">วันที่เรียน</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num stat-accent-green">${avgPerDay}</div>
+        <div class="stat-label">เฉลี่ย / วัน</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">${bestDay.count}</div>
+        <div class="stat-label">มากสุด / วัน</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num stat-accent">${streak.current}</div>
+        <div class="stat-label">Streak ปัจจุบัน 🔥</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">${streak.max}</div>
+        <div class="stat-label">Streak สูงสุด 🏆</div>
+      </div>
+    </div>
+
+    ${streak.current > 0 ? `
+    <div class="streak-bar">
+      <span class="streak-icon">🔥</span>
+      <div class="streak-text">
+        คุณเรียนติดต่อกัน <strong>${streak.current} วัน</strong> แล้ว! ยอดเยี่ยมมาก — อย่าหยุด!
+        ${streak.current >= streak.max ? ' 🏆 นี่คือสถิติสูงสุดของคุณ!' : ''}
+      </div>
+    </div>` : ''}
+
+    <!-- Bar Chart -->
+    <div class="chart-section">
+      <div class="chart-header">
+        <div class="chart-title">📈 จำนวนคำที่เพิ่มในแต่ละช่วงเวลา</div>
+        <div class="chart-toggle-group">
+          <button class="chart-toggle active" id="toggle-daily"   onclick="switchBarView('daily')">รายวัน</button>
+          <button class="chart-toggle"        id="toggle-weekly"  onclick="switchBarView('weekly')">รายสัปดาห์</button>
+          <button class="chart-toggle"        id="toggle-monthly" onclick="switchBarView('monthly')">รายเดือน</button>
+        </div>
+      </div>
+      <div class="chart-wrap" style="height:280px;">
+        <canvas id="barChart"></canvas>
+      </div>
+    </div>
+
+    <!-- Cumulative Chart -->
+    <div class="chart-section">
+      <div class="chart-header">
+        <div class="chart-title">📚 ความก้าวหน้าสะสม</div>
+        <div class="chart-hint">จำนวนคำรวมทั้งหมดตามเวลา</div>
+      </div>
+      <div class="chart-wrap" style="height:240px;">
+        <canvas id="cumulChart"></canvas>
+      </div>
+    </div>
+
+    <!-- Heatmap -->
+    <div class="chart-section">
+      <div class="chart-header">
+        <div class="chart-title">🗓 Heatmap การเรียน (52 สัปดาห์ล่าสุด)</div>
+      </div>
+      ${buildHeatmap(rows)}
+    </div>
+  `;
+
+  document.getElementById('analyticsContent').innerHTML = html;
+
+  // Draw charts after DOM is ready
+  setTimeout(() => {
+    window._analyticsRows = rows;
+    drawBarChart(rows, 'daily');
+    drawCumulChart(rows);
+  }, 50);
+}
+
+function switchBarView(mode) {
+  currentBarView = mode;
+  ['daily','weekly','monthly'].forEach(m => {
+    document.getElementById('toggle-'+m).classList.toggle('active', m === mode);
+  });
+  if (window._analyticsRows) drawBarChart(window._analyticsRows, mode);
+}
+
+function drawBarChart(rows, mode) {
+  const data = groupByDate(rows, mode);
+  const labels = data.map(d => d.label);
+  const counts = data.map(d => d.count);
+
+  if (barChartInstance) { barChartInstance.destroy(); barChartInstance = null; }
+
+  const canvas = document.getElementById('barChart');
+  if (!canvas) return;
+
+  barChartInstance = new Chart(canvas, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [{
+        label: 'จำนวนคำ',
+        data: counts,
+        backgroundColor: counts.map(c => c === Math.max(...counts) ? '#c9922a' : 'rgba(201,146,42,0.45)'),
+        borderColor: counts.map(c => c === Math.max(...counts) ? '#c9922a' : 'rgba(201,146,42,0.7)'),
+        borderWidth: 1,
+        borderRadius: 4,
+        borderSkipped: false,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            title: ctx => ctx[0].label,
+            label: ctx => ` ${ctx.raw} คำ`
+          }
+        }
+      },
+      scales: {
+        x: {
+          ticks: {
+            font: { family: 'Sarabun', size: 11 },
+            color: '#8b7355',
+            maxRotation: 45,
+            autoSkip: labels.length > 30,
+            maxTicksLimit: 30,
+          },
+          grid: { color: 'rgba(0,0,0,0.05)' }
+        },
+        y: {
+          beginAtZero: true,
+          ticks: {
+            font: { family: 'Sarabun', size: 11 },
+            color: '#8b7355',
+            stepSize: 1,
+            precision: 0,
+          },
+          grid: { color: 'rgba(0,0,0,0.07)' }
+        }
+      }
+    }
+  });
+}
+
+function drawCumulChart(rows) {
+  const data = groupByDate(rows, 'daily');
+  const labels = data.map(d => d.label);
+  let cum = 0;
+  const cumulData = data.map(d => { cum += d.count; return cum; });
+
+  if (cumulChartInstance) { cumulChartInstance.destroy(); cumulChartInstance = null; }
+  const canvas = document.getElementById('cumulChart');
+  if (!canvas) return;
+
+  cumulChartInstance = new Chart(canvas, {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [{
+        label: 'คำสะสม',
+        data: cumulData,
+        borderColor: '#1a1a2e',
+        backgroundColor: 'rgba(26,26,46,0.07)',
+        borderWidth: 2,
+        pointRadius: cumulData.length < 20 ? 4 : 2,
+        pointBackgroundColor: '#c9922a',
+        pointBorderColor: '#c9922a',
+        fill: true,
+        tension: 0.35,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            title: ctx => ctx[0].label,
+            label: ctx => ` รวม ${ctx.raw} คำ`
+          }
+        }
+      },
+      scales: {
+        x: {
+          ticks: {
+            font: { family: 'Sarabun', size: 11 },
+            color: '#8b7355',
+            maxRotation: 45,
+            autoSkip: true,
+            maxTicksLimit: 20,
+          },
+          grid: { color: 'rgba(0,0,0,0.05)' }
+        },
+        y: {
+          beginAtZero: true,
+          ticks: {
+            font: { family: 'Sarabun', size: 11 },
+            color: '#8b7355',
+            precision: 0,
+          },
+          grid: { color: 'rgba(0,0,0,0.07)' }
+        }
+      }
+    }
+  });
+}
+
+// Auto load
 loadSheet();
 </script>
 </body>
