@@ -965,7 +965,7 @@ function renderQuestion(){
     html+=`<input class="fill-input" id="fillInput" type="text" placeholder="พิมพ์คำภาษาอังกฤษ..." autocomplete="off" autocorrect="off" spellcheck="false" />`;
     html+=`<button class="fill-submit" id="fillSubmit" onclick="submitFill()">ตรวจคำตอบ ✓</button>`;
   } else {
-    html+=`<div class="mcq-options">${q.options.map((o,i)=>`<button class="mcq-opt" data-idx="${i}" onclick="selectMCQ(this,${o.correct},'${esc(q.eng)}','${esc(q.mean)}')"><span class="opt-letter">${'ABCD'[i]}</span>${esc(o.text)}</button>`).join('')}</div>`;
+    html+=`<div class="mcq-options">${q.options.map((o,i)=>`<button class="mcq-opt" data-idx="${i}" data-correct="${o.correct?'1':'0'}" data-eng="${esc(q.eng)}" data-mean="${esc(q.mean)}" onclick="selectMCQ(this)"><span class="opt-letter">${'ABCD'[i]}</span>${esc(o.text)}</button>`).join('')}</div>`;
   }
 
   html+=`<div class="q-feedback" id="qFeedback"></div>`;
@@ -979,10 +979,13 @@ function renderQuestion(){
   if(fi) fi.addEventListener('keydown',e=>{if(e.key==='Enter')submitFill();});
 }
 
-function selectMCQ(btn,correct,eng,mean){
+function selectMCQ(btn){
   if(quizState.answered)return;
   quizState.answered=true;
-  const opts=document.querySelectorAll('.mcq-opt');
+  const correct = btn.dataset.correct === '1';
+  const eng     = btn.dataset.eng  || '';
+  const mean    = btn.dataset.mean || '';
+  const opts    = document.querySelectorAll('.mcq-opt');
   opts.forEach(o=>o.disabled=true);
 
   if(correct){
@@ -991,8 +994,8 @@ function selectMCQ(btn,correct,eng,mean){
     showFeedback(true,eng,mean);
   } else {
     btn.classList.add('wrong');
-    // Show correct
-    opts.forEach(o=>{if(o.onclick&&o.onclick.toString().includes(',true,'))o.classList.add('correct');});
+    // Highlight the correct option
+    opts.forEach(o=>{ if(o.dataset.correct==='1') o.classList.add('correct'); });
     quizState.wrongItems.push({eng,mean});
     showFeedback(false,eng,mean);
   }
