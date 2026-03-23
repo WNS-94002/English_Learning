@@ -17,6 +17,7 @@
       --blue: #2471a3;
       --green: #1e8449;
       --purple: #6c3483;
+      --yt-red: #ff0000;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
@@ -50,9 +51,72 @@
     .header-badges { display: flex; gap: 8px; flex-wrap: wrap; }
     .badge { font-size: 0.68rem; padding: 5px 13px; border-radius: 20px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; }
     .badge-tts { background: var(--accent); color: white; }
+    .badge-yt  { background: var(--yt-red); color: white; }
     .badge-live { background: var(--green); color: white; display: flex; align-items: center; gap: 5px; }
     .badge-live::before { content: ''; display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #7dffb3; animation: blink 1.4s infinite; }
     @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+    /* ══ YOUTUBE MODAL ══ */
+    .yt-modal-backdrop {
+      display: none;
+      position: fixed; inset: 0; z-index: 9999;
+      background: rgba(0,0,0,0.82);
+      backdrop-filter: blur(4px);
+      align-items: center; justify-content: center;
+      animation: fadeIn 0.2s ease;
+    }
+    .yt-modal-backdrop.open { display: flex; }
+    .yt-modal {
+      background: #0f0f0f;
+      border-radius: 12px;
+      box-shadow: 0 24px 80px rgba(0,0,0,0.7);
+      overflow: hidden;
+      width: min(860px, 96vw);
+      animation: popUp 0.25s cubic-bezier(0.34,1.56,0.64,1);
+      position: relative;
+    }
+    @keyframes popUp { from{transform:scale(0.88);opacity:0} to{transform:scale(1);opacity:1} }
+    .yt-modal-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 12px 16px;
+      background: #1a1a1a;
+      border-bottom: 1px solid #333;
+    }
+    .yt-modal-label {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 0.78rem; color: #ccc; font-family: 'Sarabun', sans-serif;
+    }
+    .yt-modal-label strong { color: white; font-size: 0.9rem; }
+    .yt-logo { color: var(--yt-red); font-size: 1.1rem; }
+    .yt-modal-close {
+      background: none; border: 1px solid #444; color: #aaa;
+      width: 32px; height: 32px; border-radius: 50%; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem; transition: all 0.18s;
+    }
+    .yt-modal-close:hover { background: var(--accent); border-color: var(--accent); color: white; }
+    .yt-iframe-wrap {
+      position: relative; width: 100%; padding-top: 56.25%; /* 16:9 */
+      background: #000;
+    }
+    .yt-iframe-wrap iframe {
+      position: absolute; inset: 0; width: 100%; height: 100%; border: none;
+    }
+    .yt-modal-footer {
+      padding: 10px 16px;
+      background: #1a1a1a;
+      display: flex; align-items: center; gap: 10px;
+      border-top: 1px solid #333;
+    }
+    .yt-open-link {
+      font-size: 0.72rem; color: #888; text-decoration: none;
+      display: flex; align-items: center; gap: 5px; transition: color 0.18s;
+    }
+    .yt-open-link:hover { color: var(--yt-red); }
+    .yt-phrase-display {
+      flex: 1; font-family: 'Playfair Display', serif; font-style: italic;
+      font-size: 0.95rem; color: #ddd; text-align: center;
+    }
 
     /* NAV */
     .nav-tabs { display: flex; background: rgba(26,26,46,0.06); border-bottom: 2px solid var(--line); padding: 0 88px; position: relative; z-index: 10; }
@@ -99,14 +163,33 @@
     td:first-child { padding-left: 24px; text-align: center; }
     .row-num { display: inline-flex; width: 24px; height: 24px; background: var(--ink); color: white; border-radius: 50%; align-items: center; justify-content: center; font-size: 0.67rem; font-weight: 700; }
     .date-cell { font-size: 0.72rem; color: var(--muted); white-space: nowrap; }
-    .phrase-cell { display: flex; align-items: flex-start; gap: 8px; }
+    .phrase-cell { display: flex; align-items: flex-start; gap: 6px; }
     .phrase-text { flex: 1; }
     .english { font-family: 'Playfair Display', serif; font-style: italic; font-size: 1.02rem; color: var(--ink); line-height: 1.35; }
     .phonetic-small { font-size: 0.7rem; color: var(--muted); margin-top: 3px; }
     .meaning-th { font-size: 0.79rem; color: #3a3a3a; line-height: 1.55; }
-    .speak-btn { flex-shrink: 0; width: 34px; height: 34px; border-radius: 50%; border: 2px solid var(--gold); background: transparent; color: var(--gold); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1rem; transition: all 0.2s; margin-top: 1px; }
+
+    /* ── Speak & YT buttons ── */
+    .speak-btn {
+      flex-shrink: 0; width: 34px; height: 34px; border-radius: 50%;
+      border: 2px solid var(--gold); background: transparent; color: var(--gold);
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      font-size: 1rem; transition: all 0.2s; margin-top: 1px;
+    }
     .speak-btn:hover { background: var(--gold); color: white; transform: scale(1.1); }
     .speak-btn.speaking { background: var(--accent); border-color: var(--accent); color: white; animation: pulse 0.55s infinite alternate; }
+
+    /* YouTube button in table */
+    .yt-btn {
+      flex-shrink: 0; width: 34px; height: 34px; border-radius: 50%;
+      border: 2px solid var(--yt-red); background: transparent; color: var(--yt-red);
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      font-size: 0.85rem; transition: all 0.2s; margin-top: 1px;
+      text-decoration: none; line-height: 1;
+    }
+    .yt-btn:hover { background: var(--yt-red); color: white; transform: scale(1.1); }
+    .yt-btn title { display: none; }
+
     @keyframes pulse { from{transform:scale(1)} to{transform:scale(1.12)} }
     .examples-group { display: flex; flex-direction: column; gap: 6px; }
     .example-item { background: rgba(0,0,0,0.025); border-left: 3px solid var(--line); border-radius: 0 4px 4px 0; padding: 6px 8px; transition: border-color 0.2s; }
@@ -189,12 +272,15 @@
     .tier-3 .review-count-bubble { background: #fff0cc; border-color: #c9922a; color: #8a6010; }
     .tier-4 .review-count-bubble { background: #e8f8ef; border-color: var(--green); color: var(--green); }
     .review-count-label { font-size: 0.58rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
-    .review-card-bottom { display: flex; align-items: center; gap: 8px; }
+    .review-card-bottom { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
     .review-date { font-size: 0.65rem; color: var(--muted); flex: 1; }
-    .btn-review-speak { background: none; border: 1.5px solid var(--gold); border-radius: 20px; padding: 4px 12px; font-family: 'Sarabun', sans-serif; font-size: 0.7rem; color: var(--gold); cursor: pointer; transition: all 0.18s; display: flex; align-items: center; gap: 5px; }
+    .btn-review-speak { background: none; border: 1.5px solid var(--gold); border-radius: 20px; padding: 4px 10px; font-family: 'Sarabun', sans-serif; font-size: 0.7rem; color: var(--gold); cursor: pointer; transition: all 0.18s; display: flex; align-items: center; gap: 5px; }
     .btn-review-speak:hover { background: var(--gold); color: white; }
     .btn-review-speak.speaking { background: var(--accent); border-color: var(--accent); color: white; }
-    .btn-plus-one { background: none; border: 1.5px solid var(--green); border-radius: 20px; padding: 4px 12px; font-family: 'Sarabun', sans-serif; font-size: 0.7rem; color: var(--green); cursor: pointer; transition: all 0.18s; display: flex; align-items: center; gap: 5px; }
+    /* YouTube button in review card */
+    .btn-review-yt { background: none; border: 1.5px solid var(--yt-red); border-radius: 20px; padding: 4px 10px; font-family: 'Sarabun', sans-serif; font-size: 0.7rem; color: var(--yt-red); cursor: pointer; transition: all 0.18s; display: flex; align-items: center; gap: 5px; }
+    .btn-review-yt:hover { background: var(--yt-red); color: white; }
+    .btn-plus-one { background: none; border: 1.5px solid var(--green); border-radius: 20px; padding: 4px 10px; font-family: 'Sarabun', sans-serif; font-size: 0.7rem; color: var(--green); cursor: pointer; transition: all 0.18s; display: flex; align-items: center; gap: 5px; }
     .btn-plus-one:hover { background: var(--green); color: white; }
     .review-badge-new { font-size: 0.6rem; font-weight: 700; color: white; background: var(--accent); border-radius: 10px; padding: 1px 7px; text-transform: uppercase; letter-spacing: 0.07em; }
     .review-badge-mastered { font-size: 0.6rem; font-weight: 700; color: white; background: var(--green); border-radius: 10px; padding: 1px 7px; text-transform: uppercase; letter-spacing: 0.07em; }
@@ -204,65 +290,28 @@
     .rev-filter-btn:hover { border-color: var(--gold); color: var(--gold); }
     .rev-filter-btn.active { background: var(--ink); color: white; border-color: var(--ink); }
 
-    /* ═══════════════════════════════════════════
-       QUIZ PAGE  — "Examination Room" aesthetic
-    ═══════════════════════════════════════════ */
+    /* ═══ QUIZ PAGE ═══ */
     .quiz-page { padding: 0; }
-
-    /* — Top bar — */
-    .quiz-topbar {
-      background: var(--ink); color: white;
-      padding: 20px 88px;
-      display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;
-    }
+    .quiz-topbar { background: var(--ink); color: white; padding: 20px 88px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
     .quiz-topbar-title { font-family: 'Playfair Display', serif; font-size: 1.1rem; }
     .quiz-topbar-title span { color: var(--gold); }
-    .quiz-sunday-badge {
-      font-size: 0.68rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
-      background: rgba(201,146,42,0.2); border: 1px solid var(--gold); color: var(--gold);
-      padding: 4px 12px; border-radius: 20px; display: flex; align-items: center; gap: 6px;
-    }
+    .quiz-sunday-badge { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; background: rgba(201,146,42,0.2); border: 1px solid var(--gold); color: var(--gold); padding: 4px 12px; border-radius: 20px; display: flex; align-items: center; gap: 6px; }
     .quiz-sunday-badge .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--gold); animation: blink 1s infinite; }
-
-    /* — Dashboard view — */
     #quizDashboard { padding: 36px 88px 60px; }
-
-    .quiz-status-card {
-      background: var(--ink); color: white;
-      border-radius: 12px; padding: 28px 32px;
-      margin-bottom: 28px;
-      display: flex; align-items: center; gap: 28px; flex-wrap: wrap;
-      background-image: radial-gradient(ellipse at 85% 50%, rgba(201,146,42,0.18) 0%, transparent 60%);
-    }
+    .quiz-status-card { background: var(--ink); color: white; border-radius: 12px; padding: 28px 32px; margin-bottom: 28px; display: flex; align-items: center; gap: 28px; flex-wrap: wrap; background-image: radial-gradient(ellipse at 85% 50%, rgba(201,146,42,0.18) 0%, transparent 60%); }
     .quiz-status-icon { font-size: 3rem; flex-shrink: 0; }
     .quiz-status-text h2 { font-family: 'Playfair Display', serif; font-size: 1.3rem; margin-bottom: 6px; }
     .quiz-status-text p { font-size: 0.82rem; color: rgba(255,255,255,0.65); line-height: 1.6; }
     .quiz-status-text .countdown { color: var(--gold); font-weight: 700; font-size: 1rem; margin-top: 8px; }
-
-    .quiz-start-btn {
-      margin-left: auto; flex-shrink: 0;
-      background: var(--gold); color: var(--ink);
-      border: none; padding: 14px 32px; border-radius: 8px;
-      font-family: 'Playfair Display', serif; font-size: 1rem; font-weight: 700;
-      cursor: pointer; transition: all 0.2s;
-      box-shadow: 0 4px 14px rgba(201,146,42,0.35);
-    }
+    .quiz-start-btn { margin-left: auto; flex-shrink: 0; background: var(--gold); color: var(--ink); border: none; padding: 14px 32px; border-radius: 8px; font-family: 'Playfair Display', serif; font-size: 1rem; font-weight: 700; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 14px rgba(201,146,42,0.35); }
     .quiz-start-btn:hover { background: #e0a830; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(201,146,42,0.45); }
     .quiz-start-btn:disabled { background: #bbb; color: #777; cursor: not-allowed; box-shadow: none; transform: none; }
-
-    /* Progress chart section */
     .quiz-progress-section { margin-bottom: 28px; }
     .quiz-progress-title { font-family: 'Playfair Display', serif; font-size: 1rem; color: var(--ink); margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
     .quiz-history-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; margin-bottom: 28px; }
-    .quiz-history-card {
-      background: white; border: 1px solid var(--line); border-radius: 10px;
-      padding: 14px 18px; position: relative; overflow: hidden;
-      transition: box-shadow 0.2s, transform 0.2s;
-    }
+    .quiz-history-card { background: white; border: 1px solid var(--line); border-radius: 10px; padding: 14px 18px; position: relative; overflow: hidden; transition: box-shadow 0.2s, transform 0.2s; }
     .quiz-history-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.08); transform: translateY(-2px); }
-    .quiz-history-card::after {
-      content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 3px;
-    }
+    .quiz-history-card::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 3px; }
     .quiz-history-card.grade-s::after { background: var(--gold); }
     .quiz-history-card.grade-a::after { background: var(--green); }
     .quiz-history-card.grade-b::after { background: var(--blue); }
@@ -280,44 +329,23 @@
     .qhc-detail { font-size: 0.7rem; color: var(--muted); margin-top: 6px; }
     .qhc-types { display: flex; gap: 4px; margin-top: 8px; flex-wrap: wrap; }
     .qhc-type-pill { font-size: 0.58rem; padding: 2px 7px; border-radius: 10px; background: rgba(0,0,0,0.05); color: var(--muted); }
-
     .no-history { text-align: center; padding: 50px 20px; color: var(--muted); font-size: 0.88rem; background: white; border: 1px solid var(--line); border-radius: 10px; }
-
-    /* — Quiz Runner view — */
     #quizRunner { display: none; padding: 36px 88px 60px; }
-
-    .quiz-runner-header {
-      display: flex; align-items: center; gap: 16px; margin-bottom: 28px; flex-wrap: wrap;
-    }
+    .quiz-runner-header { display: flex; align-items: center; gap: 16px; margin-bottom: 28px; flex-wrap: wrap; }
     .quiz-prog-bar-wrap { flex: 1; background: var(--line); border-radius: 10px; height: 10px; overflow: hidden; min-width: 120px; }
     .quiz-prog-bar { height: 100%; background: linear-gradient(90deg, var(--gold), var(--accent)); border-radius: 10px; transition: width 0.4s ease; }
     .quiz-prog-text { font-size: 0.78rem; color: var(--muted); white-space: nowrap; }
     .quiz-score-live { font-family: 'Playfair Display', serif; font-size: 1rem; font-weight: 700; color: var(--ink); white-space: nowrap; }
     .quiz-quit-btn { background: none; border: 1px solid var(--line); border-radius: 6px; padding: 5px 14px; font-family: 'Sarabun', sans-serif; font-size: 0.72rem; color: var(--muted); cursor: pointer; transition: all 0.2s; }
     .quiz-quit-btn:hover { border-color: var(--accent); color: var(--accent); }
-
-    /* Question card */
-    .question-card {
-      background: white; border: 1px solid var(--line); border-radius: 14px;
-      padding: 36px 40px; max-width: 680px; margin: 0 auto 24px;
-      box-shadow: 0 2px 16px rgba(0,0,0,0.06);
-      animation: slideUp 0.3s ease;
-    }
+    .question-card { background: white; border: 1px solid var(--line); border-radius: 14px; padding: 36px 40px; max-width: 680px; margin: 0 auto 24px; box-shadow: 0 2px 16px rgba(0,0,0,0.06); animation: slideUp 0.3s ease; }
     @keyframes slideUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
-
     .q-type-chip { display: inline-flex; align-items: center; gap: 6px; font-size: 0.65rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); background: rgba(0,0,0,0.04); border-radius: 20px; padding: 3px 10px; margin-bottom: 16px; }
     .q-prompt { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-style: italic; color: var(--ink); line-height: 1.4; margin-bottom: 8px; }
     .q-sub { font-size: 0.78rem; color: var(--muted); margin-bottom: 24px; }
     .q-hint { font-size: 0.72rem; color: var(--blue); margin-bottom: 16px; font-style: italic; }
-
-    /* MCQ options */
     .mcq-options { display: flex; flex-direction: column; gap: 10px; }
-    .mcq-opt {
-      border: 2px solid var(--line); border-radius: 10px; padding: 14px 18px;
-      cursor: pointer; transition: all 0.18s; font-size: 0.88rem; color: var(--ink);
-      background: white; font-family: 'Sarabun', sans-serif; text-align: left;
-      display: flex; align-items: center; gap: 12px;
-    }
+    .mcq-opt { border: 2px solid var(--line); border-radius: 10px; padding: 14px 18px; cursor: pointer; transition: all 0.18s; font-size: 0.88rem; color: var(--ink); background: white; font-family: 'Sarabun', sans-serif; text-align: left; display: flex; align-items: center; gap: 12px; }
     .mcq-opt:hover:not(:disabled) { border-color: var(--gold); background: rgba(201,146,42,0.04); }
     .mcq-opt .opt-letter { width: 28px; height: 28px; border-radius: 50%; border: 2px solid var(--line); display: flex; align-items: center; justify-content: center; font-size: 0.72rem; font-weight: 700; flex-shrink: 0; transition: all 0.18s; }
     .mcq-opt:hover:not(:disabled) .opt-letter { border-color: var(--gold); color: var(--gold); }
@@ -326,55 +354,24 @@
     .mcq-opt.wrong { border-color: var(--accent); background: rgba(192,57,43,0.06); }
     .mcq-opt.wrong .opt-letter { background: var(--accent); border-color: var(--accent); color: white; }
     .mcq-opt:disabled { cursor: default; }
-
-    /* Fill in the blank */
-    .fill-input {
-      width: 100%; font-family: 'Playfair Display', serif; font-size: 1.3rem;
-      padding: 14px 18px; border: 2px solid var(--line); border-radius: 10px;
-      outline: none; transition: border-color 0.2s; color: var(--ink); background: white;
-    }
+    .fill-input { width: 100%; font-family: 'Playfair Display', serif; font-size: 1.3rem; padding: 14px 18px; border: 2px solid var(--line); border-radius: 10px; outline: none; transition: border-color 0.2s; color: var(--ink); background: white; }
     .fill-input:focus { border-color: var(--gold); }
     .fill-input.correct { border-color: var(--green); background: rgba(30,132,73,0.04); }
     .fill-input.wrong { border-color: var(--accent); background: rgba(192,57,43,0.04); }
-    .fill-submit {
-      margin-top: 12px; background: var(--ink); color: white; border: none;
-      padding: 11px 28px; border-radius: 8px; font-family: 'Sarabun', sans-serif;
-      font-size: 0.82rem; font-weight: 600; cursor: pointer; transition: all 0.2s;
-    }
+    .fill-submit { margin-top: 12px; background: var(--ink); color: white; border: none; padding: 11px 28px; border-radius: 8px; font-family: 'Sarabun', sans-serif; font-size: 0.82rem; font-weight: 600; cursor: pointer; transition: all 0.2s; }
     .fill-submit:hover { background: #2c2c4e; }
     .fill-submit:disabled { opacity: 0.4; cursor: not-allowed; }
-
-    /* Feedback */
-    .q-feedback {
-      margin-top: 18px; padding: 14px 18px; border-radius: 10px;
-      font-size: 0.82rem; line-height: 1.6; animation: fadeIn 0.25s;
-      display: none;
-    }
+    .q-feedback { margin-top: 18px; padding: 14px 18px; border-radius: 10px; font-size: 0.82rem; line-height: 1.6; animation: fadeIn 0.25s; display: none; }
     .q-feedback.show { display: block; }
     @keyframes fadeIn { from{opacity:0} to{opacity:1} }
     .q-feedback.correct { background: rgba(30,132,73,0.08); border-left: 3px solid var(--green); color: #155a32; }
     .q-feedback.wrong { background: rgba(192,57,43,0.08); border-left: 3px solid var(--accent); color: #7b1c10; }
     .q-feedback strong { display: block; margin-bottom: 4px; }
-
-    .next-btn {
-      display: block; width: 100%; margin-top: 16px;
-      background: var(--ink); color: white; border: none;
-      padding: 13px; border-radius: 10px; font-family: 'Sarabun', sans-serif;
-      font-size: 0.88rem; font-weight: 700; cursor: pointer; transition: all 0.2s;
-      letter-spacing: 0.04em; display: none;
-    }
+    .next-btn { display: block; width: 100%; margin-top: 16px; background: var(--ink); color: white; border: none; padding: 13px; border-radius: 10px; font-family: 'Sarabun', sans-serif; font-size: 0.88rem; font-weight: 700; cursor: pointer; transition: all 0.2s; letter-spacing: 0.04em; display: none; }
     .next-btn.show { display: block; }
     .next-btn:hover { background: var(--gold); color: var(--ink); }
-
-    /* — Result view — */
     #quizResult { display: none; padding: 36px 88px 60px; }
-
-    .result-card {
-      max-width: 600px; margin: 0 auto;
-      background: white; border: 1px solid var(--line); border-radius: 16px;
-      padding: 40px; text-align: center;
-      box-shadow: 0 4px 24px rgba(0,0,0,0.08);
-    }
+    .result-card { max-width: 600px; margin: 0 auto; background: white; border: 1px solid var(--line); border-radius: 16px; padding: 40px; text-align: center; box-shadow: 0 4px 24px rgba(0,0,0,0.08); }
     .result-emoji { font-size: 4rem; margin-bottom: 16px; }
     .result-grade { font-family: 'Playfair Display', serif; font-size: 5rem; font-weight: 700; line-height: 1; margin-bottom: 8px; }
     .result-grade.grade-s { color: var(--gold); }
@@ -395,21 +392,15 @@
     .rbtn-primary:hover { background: var(--gold); color: var(--ink); }
     .rbtn-secondary { background: white; color: var(--ink); border: 1px solid var(--line); }
     .rbtn-secondary:hover { border-color: var(--gold); }
-
-    /* Wrong answers review list */
     .wrong-list { max-width: 600px; margin: 28px auto 0; text-align: left; }
     .wrong-list-title { font-size: 0.82rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 12px; }
     .wrong-item { background: rgba(192,57,43,0.04); border: 1px solid rgba(192,57,43,0.15); border-radius: 8px; padding: 12px 14px; margin-bottom: 8px; }
     .wrong-item-en { font-family: 'Playfair Display', serif; font-style: italic; color: var(--ink); margin-bottom: 3px; }
     .wrong-item-th { font-size: 0.75rem; color: var(--muted); }
-
-    /* ── FOOTER ── */
     .footer { background: var(--ink); color: rgba(255,255,255,0.4); text-align: center; padding: 15px; font-size: 0.68rem; letter-spacing: 0.09em; position: relative; z-index: 10; }
     .footer a { color: var(--gold); text-decoration: none; }
-
     @keyframes popIn { 0%{transform:scale(0.85);opacity:0} 70%{transform:scale(1.07)} 100%{transform:scale(1);opacity:1} }
     .pop-anim { animation: popIn 0.28s ease; }
-
     @media (max-width: 768px) {
       .controls-bar, .status-bar, .nav-tabs, #quizDashboard, #quizRunner, #quizResult, .inner-page { padding-left: 16px; padding-right: 16px; }
       .quiz-topbar { padding-left: 16px; padding-right: 16px; }
@@ -417,10 +408,35 @@
       .notebook-title { font-size: 1.2rem; }
       .question-card { padding: 24px 20px; }
       .result-breakdown { grid-template-columns: repeat(2,1fr); }
+      .yt-modal { width: 96vw; }
     }
   </style>
 </head>
 <body>
+
+<!-- ══ YOUTUBE MODAL ══ -->
+<div class="yt-modal-backdrop" id="ytModalBackdrop" onclick="closeYTModal(event)">
+  <div class="yt-modal" id="ytModal">
+    <div class="yt-modal-header">
+      <div class="yt-modal-label">
+        <span class="yt-logo">▶</span>
+        <div>
+          <strong id="ytModalPhrase">—</strong>
+          <div style="font-size:0.65rem;color:#888;margin-top:2px;">YouTube · คลิปตัวอย่างการออกเสียง</div>
+        </div>
+      </div>
+      <button class="yt-modal-close" onclick="closeYTModal(null)" title="ปิด">✕</button>
+    </div>
+    <div class="yt-iframe-wrap">
+      <iframe id="ytIframe" src="" allowfullscreen allow="autoplay; encrypted-media"></iframe>
+    </div>
+    <div class="yt-modal-footer">
+      <a class="yt-open-link" id="ytOpenLink" href="#" target="_blank" rel="noopener">↗ เปิดใน YouTube</a>
+      <div class="yt-phrase-display" id="ytPhraseFooter"></div>
+    </div>
+  </div>
+</div>
+
 <div class="notebook">
 
   <!-- HEADER -->
@@ -431,7 +447,8 @@
         <div class="subtitle">English Learning Journal · Live from Google Sheets</div>
       </div>
       <div class="header-badges">
-        <div class="badge badge-tts">🔊 Text to Speech</div>
+        <div class="badge badge-tts">🔊 TTS</div>
+        <div class="badge badge-yt">▶ YouTube</div>
         <div class="badge badge-live">Live Data</div>
       </div>
     </div>
@@ -449,7 +466,7 @@
   <!-- ══ PAGE: VOCAB ══ -->
   <div id="page-vocab" class="page active">
     <div class="controls-bar">
-      <span class="ctrl-label">🎙 เสียง</span>
+      <span class="ctrl-label">🎙 เสียง TTS</span>
       <select class="ctrl-select" id="voiceSelect"><option value="">กำลังโหลดเสียง...</option></select>
       <div class="rate-wrap">
         <span>ความเร็ว:</span>
@@ -469,7 +486,7 @@
       <table>
         <thead>
           <tr>
-            <th>#</th><th>วันที่</th><th>คำ / ประโยค 🔊</th><th>ความหมาย (ไทย)</th>
+            <th>#</th><th>วันที่</th><th>คำ / ประโยค 🔊▶</th><th>ความหมาย (ไทย)</th>
             <th>ตัวอย่างที่ 1</th><th>ตัวอย่างที่ 2</th><th>ตัวอย่างที่ 3</th>
           </tr>
         </thead>
@@ -501,8 +518,6 @@
   <!-- ══ PAGE: QUIZ ══ -->
   <div id="page-quiz" class="page">
     <div class="quiz-page">
-
-      <!-- Top bar -->
       <div class="quiz-topbar">
         <div>
           <div class="quiz-topbar-title">📝 แบบทดสอบ<span>ประจำสัปดาห์</span></div>
@@ -513,8 +528,6 @@
           <span id="quizDayStatus">—</span>
         </div>
       </div>
-
-      <!-- Dashboard -->
       <div id="quizDashboard">
         <div class="quiz-status-card" id="quizStatusCard">
           <div class="quiz-status-icon" id="quizStatusIcon">📅</div>
@@ -525,8 +538,6 @@
           </div>
           <button class="quiz-start-btn" id="quizStartBtn" onclick="startQuiz()" disabled>เริ่มทดสอบ →</button>
         </div>
-
-        <!-- Progress chart -->
         <div class="quiz-progress-section">
           <div class="quiz-progress-title">📈 พัฒนาการคะแนนรายสัปดาห์
             <span style="font-family:'Sarabun',sans-serif;font-size:0.72rem;color:var(--muted);font-weight:400;">จากการทดสอบที่ผ่านมา</span>
@@ -535,13 +546,9 @@
             <div class="chart-wrap" style="height:220px;"><canvas id="quizProgressChart"></canvas></div>
           </div>
         </div>
-
-        <!-- History cards -->
         <div class="quiz-progress-title" style="margin-bottom:14px;">📜 ประวัติการสอบ</div>
         <div id="quizHistoryGrid"></div>
       </div>
-
-      <!-- Runner -->
       <div id="quizRunner">
         <div class="quiz-runner-header">
           <div style="font-family:'Playfair Display',serif;font-size:0.9rem;color:var(--muted);">ข้อที่ <strong id="qNumText" style="color:var(--ink)">1</strong></div>
@@ -550,23 +557,17 @@
           <div class="quiz-score-live" id="qScoreLive">✓ 0</div>
           <button class="quiz-quit-btn" onclick="confirmQuit()">✕ ออก</button>
         </div>
-        <div class="question-card" id="questionCard">
-          <!-- populated by JS -->
-        </div>
+        <div class="question-card" id="questionCard"></div>
         <button class="next-btn" id="nextBtn" onclick="nextQuestion()">ข้อถัดไป →</button>
       </div>
-
-      <!-- Result -->
-      <div id="quizResult">
-        <!-- populated by JS -->
-      </div>
-
+      <div id="quizResult"></div>
     </div>
   </div>
 
   <div class="footer">
     ข้อมูลจาก <a href="https://docs.google.com/spreadsheets/d/1eSWvDzZOJ4ZC7V84uym29MDIim5EFd22sJmYnKhj71w" target="_blank">Google Sheets</a>
-    &nbsp;·&nbsp; เสียงโดย Web Speech API (ต้องใช้ Chrome) &nbsp;·&nbsp; กด "อัปเดตข้อมูล" เพื่อซิงค์ล่าสุด
+    &nbsp;·&nbsp; 🔊 TTS โดย Web Speech API &nbsp;·&nbsp; ▶ YouTube จาก Column N
+    &nbsp;·&nbsp; กด "อัปเดตข้อมูล" เพื่อซิงค์ล่าสุด
   </div>
 
 </div>
@@ -576,16 +577,86 @@
    CONSTANTS & STORAGE KEYS
 ═══════════════════════════════════════════════════════════════ */
 const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRdsA1a9X5biJt-0TwVmcHV9e_kUlFipfYZfcCkHh6Nm6pNjKfO3NuzaisheO5SJf_xmcUA_iJ66aWM/pub?gid=0&single=true&output=csv';
-const REVIEW_KEY  = 'eng_journal_review_counts';
-const QUIZ_KEY    = 'eng_journal_quiz_history';
-const QUIZ_DONE_KEY = 'eng_journal_quiz_done_week'; // tracks which ISO-week is done
+const REVIEW_KEY    = 'eng_journal_review_counts';
+const QUIZ_KEY      = 'eng_journal_quiz_history';
+const QUIZ_DONE_KEY = 'eng_journal_quiz_done_week';
+
+/* ═══════════════════════════════════════════════════════════════
+   YOUTUBE MODAL
+═══════════════════════════════════════════════════════════════ */
+/**
+ * Extract YouTube video ID from any YT URL format.
+ * Supports: watch?v=, youtu.be/, embed/, shorts/
+ */
+function extractYTId(url) {
+  if (!url) return null;
+  url = url.trim();
+  // youtu.be/ID or youtu.be/ID?t=...
+  let m = url.match(/youtu\.be\/([A-Za-z0-9_-]{11})/);
+  if (m) return m[1];
+  // youtube.com/watch?v=ID
+  m = url.match(/[?&]v=([A-Za-z0-9_-]{11})/);
+  if (m) return m[1];
+  // youtube.com/embed/ID
+  m = url.match(/embed\/([A-Za-z0-9_-]{11})/);
+  if (m) return m[1];
+  // youtube.com/shorts/ID
+  m = url.match(/shorts\/([A-Za-z0-9_-]{11})/);
+  if (m) return m[1];
+  return null;
+}
+
+/**
+ * Extract start time (seconds) from URL if ?t= or &t= present
+ */
+function extractYTStart(url) {
+  if (!url) return 0;
+  const m = url.match(/[?&]t=(\d+)/);
+  return m ? parseInt(m[1]) : 0;
+}
+
+function openYTModal(ytUrl, phraseText) {
+  const videoId = extractYTId(ytUrl);
+  if (!videoId) {
+    // Fallback: open in new tab if can't parse
+    window.open(ytUrl, '_blank', 'noopener');
+    return;
+  }
+  const start = extractYTStart(ytUrl);
+  const embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0${start ? '&start=' + start : ''}`;
+
+  document.getElementById('ytIframe').src = embedUrl;
+  document.getElementById('ytModalPhrase').textContent = phraseText || '';
+  document.getElementById('ytPhraseFooter').textContent = phraseText || '';
+  document.getElementById('ytOpenLink').href = ytUrl;
+  document.getElementById('ytModalBackdrop').classList.add('open');
+
+  // Stop TTS when opening YT
+  speechSynthesis.cancel();
+  if (currentBtn) { currentBtn.classList.remove('speaking'); currentBtn._speaking = false; currentBtn = null; }
+}
+
+function closeYTModal(e) {
+  // If clicking backdrop itself (not the modal box), close
+  if (e && e.target !== document.getElementById('ytModalBackdrop')) return;
+  document.getElementById('ytModalBackdrop').classList.remove('open');
+  // Stop video by clearing src
+  setTimeout(() => { document.getElementById('ytIframe').src = ''; }, 200);
+}
+
+// Close on ESC
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    document.getElementById('ytModalBackdrop').classList.remove('open');
+    setTimeout(() => { document.getElementById('ytIframe').src = ''; }, 200);
+  }
+});
 
 /* ═══════════════════════════════════════════════════════════════
    HELPERS
 ═══════════════════════════════════════════════════════════════ */
 function getISOWeek(d) {
-  const dt = new Date(d);
-  dt.setHours(0,0,0,0);
+  const dt = new Date(d); dt.setHours(0,0,0,0);
   dt.setDate(dt.getDate() + 3 - (dt.getDay()+6)%7);
   const w1 = new Date(dt.getFullYear(),0,4);
   return `${dt.getFullYear()}-W${String(1+Math.round(((dt-w1)/86400000-3+(w1.getDay()+6)%7)/7)).padStart(2,'0')}`;
@@ -612,21 +683,14 @@ function getGrade(pct) {
 function gradeMsg(g) {
   return {S:'🏆 ยอดเยี่ยม! คุณเชี่ยวชาญคำศัพท์เหล่านี้แล้ว!',A:'🌟 ดีมาก! ทำได้น่าประทับใจ',B:'👍 ดี! ฝึกต่อไปอีกนิดนึงนะ',C:'💪 ผ่านได้! แต่ยังมีที่ต้องปรับปรุง',D:'📖 ยังต้องทบทวนเพิ่มเติม — ไม่ท้อนะ!'}[g]||'';
 }
-
-/* localStorage */
 function getQuizHistory()  { try{return JSON.parse(localStorage.getItem(QUIZ_KEY)||'[]');}catch(e){return[];} }
 function saveQuizHistory(h){ localStorage.setItem(QUIZ_KEY, JSON.stringify(h)); }
 function getReviewCounts() { try{return JSON.parse(localStorage.getItem(REVIEW_KEY)||'{}');}catch(e){return{};} }
 function setReviewCounts(o){ localStorage.setItem(REVIEW_KEY, JSON.stringify(o)); }
 function incrementReviewCount(key){ const c=getReviewCounts(); c[key]=(c[key]||0)+1; setReviewCounts(c); return c[key]; }
 function resetReviewCounts(){ localStorage.removeItem(REVIEW_KEY); }
-function quizDoneThisWeek(){
-  const wk=getISOWeek(new Date());
-  return localStorage.getItem(QUIZ_DONE_KEY)===wk;
-}
-function markQuizDone(){
-  localStorage.setItem(QUIZ_DONE_KEY, getISOWeek(new Date()));
-}
+function quizDoneThisWeek(){ return localStorage.getItem(QUIZ_DONE_KEY)===getISOWeek(new Date()); }
+function markQuizDone(){ localStorage.setItem(QUIZ_DONE_KEY, getISOWeek(new Date())); }
 
 /* ═══════════════════════════════════════════════════════════════
    TAB SWITCHING
@@ -642,7 +706,7 @@ function switchTab(tab) {
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   SPEECH
+   SPEECH (TTS)
 ═══════════════════════════════════════════════════════════════ */
 let voices=[], currentBtn=null;
 function loadVoices(){
@@ -685,7 +749,7 @@ function speak(text,btn,reviewKey){
     if(bubble){bubble.textContent=nc;bubble.closest('.review-card').className='review-card '+getTier(nc);const c=bubble.closest('.review-card');c.classList.add('pop-anim');c.addEventListener('animationend',()=>c.classList.remove('pop-anim'),{once:true});updateReviewSummaryBar();}
   }
 }
-function speakRaw(text){ // for quiz, no btn needed
+function speakRaw(text){
   speechSynthesis.cancel();
   const enV=voices.filter(v=>v.lang.startsWith('en'));
   const rate=parseFloat(document.getElementById('rateRange').value)||0.85;
@@ -696,7 +760,7 @@ function speakRaw(text){ // for quiz, no btn needed
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   CSV
+   CSV PARSING
 ═══════════════════════════════════════════════════════════════ */
 function parseCSV(txt){
   const rows=[];let row=[],f='',q=false;
@@ -704,22 +768,56 @@ function parseCSV(txt){
   if(f||row.length){row.push(f);rows.push(row);}return rows;
 }
 function esc(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
+
 function exCell(enTxt,thTxt){
   enTxt=(enTxt||'').trim();thTxt=(thTxt||'').trim();
   if(!enTxt&&!thTxt)return'<td></td>';
   return`<td><div class="examples-group"><div class="example-item"><div class="example-en"><span>${esc(enTxt).replace(/\n/g,'<br>')}</span><button class="speak-sm" data-text="${esc(enTxt)}">▶ ฟัง</button></div>${thTxt?`<div class="example-th">${esc(thTxt).replace(/\n/g,'<br>')}</div>`:''}</div></div></td>`;
 }
+
+/**
+ * Build a table row.
+ * Column index reference (0-based, after CSV parse):
+ *   0=ลำดับ, 1=วันที่, 2=English, 3=Phonetic, 4=Thai meaning,
+ *   5=Ex1-EN, 6=Ex1-TH, 7=Ex2-EN, 8=Ex2-TH, 9=Ex3-EN, 10=Ex3-TH,
+ *   ...skip any columns...
+ *   13=YouTube URL (Column N)
+ */
 function buildRow(c,i){
-  const eng=(c[2]||'').trim();if(!eng)return'';
-  const num=(c[0]||'').trim()||(i+1);const date=(c[1]||'').trim();const phon=(c[3]||'').trim();const mean=(c[4]||'').trim();
-  return`<tr><td><span class="row-num">${esc(String(num))}</span></td><td class="date-cell">${esc(date)}</td><td><div class="phrase-cell"><div class="phrase-text"><div class="english">${esc(eng)}</div>${phon?`<div class="phonetic-small">${esc(phon)}</div>`:''}</div><button class="speak-btn" data-text="${esc(eng)}" title="ฟังเสียง">🔊</button></div></td><td class="meaning-th">${esc(mean).replace(/\n/g,'<br>')}</td>${exCell(c[5],c[6])}${exCell(c[7],c[8])}${exCell(c[9],c[10])}</tr>`;
+  const eng=(c[2]||'').trim(); if(!eng)return'';
+  const num=(c[0]||'').trim()||(i+1);
+  const date=(c[1]||'').trim();
+  const phon=(c[3]||'').trim();
+  const mean=(c[4]||'').trim();
+  const ytUrl=(c[13]||'').trim(); // Column N = index 13
+
+  // Build speak + optional YT button
+  const speakBtnHtml = `<button class="speak-btn" data-text="${esc(eng)}" title="ฟังเสียง TTS">🔊</button>`;
+  const ytBtnHtml = ytUrl
+    ? `<button class="yt-btn" data-yturl="${esc(ytUrl)}" data-phrase="${esc(eng)}" title="ดูคลิป YouTube">▶</button>`
+    : '';
+
+  return`<tr>
+    <td><span class="row-num">${esc(String(num))}</span></td>
+    <td class="date-cell">${esc(date)}</td>
+    <td><div class="phrase-cell">
+      <div class="phrase-text">
+        <div class="english">${esc(eng)}</div>
+        ${phon?`<div class="phonetic-small">${esc(phon)}</div>`:''}
+      </div>
+      ${speakBtnHtml}${ytBtnHtml}
+    </div></td>
+    <td class="meaning-th">${esc(mean).replace(/\n/g,'<br>')}</td>
+    ${exCell(c[5],c[6])}${exCell(c[7],c[8])}${exCell(c[9],c[10])}
+  </tr>`;
 }
 
 /* ═══════════════════════════════════════════════════════════════
    LOAD SHEET
 ═══════════════════════════════════════════════════════════════ */
 async function loadSheet(){
-  const btn=document.getElementById('refreshBtn'),body=document.getElementById('tableBody'),dot=document.getElementById('statusDot'),stxt=document.getElementById('statusText'),rcnt=document.getElementById('rowCount');
+  const btn=document.getElementById('refreshBtn'),body=document.getElementById('tableBody');
+  const dot=document.getElementById('statusDot'),stxt=document.getElementById('statusText'),rcnt=document.getElementById('rowCount');
   btn.classList.add('loading'); dot.className='status-dot loading'; stxt.textContent='กำลังดึงข้อมูล...'; rcnt.textContent='';
   body.innerHTML=`<tr class="state-row"><td colspan="8"><span class="spinner"></span>กำลังโหลด...</td></tr>`;
   try{
@@ -729,7 +827,10 @@ async function loadSheet(){
     window._allRows=rows;
     body.innerHTML=rows.map((r,i)=>buildRow(r,i)).join('')||`<tr class="state-row"><td colspan="8">ไม่พบข้อมูล</td></tr>`;
     const count=rows.filter(r=>(r[2]||'').trim()).length;
-    dot.className='status-dot ok'; stxt.textContent=`โหลดสำเร็จ — ${new Date().toLocaleString('th-TH')}`; rcnt.textContent=`📚 ${count} คำ/ประโยค`;
+    const ytCount=rows.filter(r=>(r[13]||'').trim()).length;
+    dot.className='status-dot ok';
+    stxt.textContent=`โหลดสำเร็จ — ${new Date().toLocaleString('th-TH')}`;
+    rcnt.textContent=`📚 ${count} คำ/ประโยค${ytCount?` · ▶ ${ytCount} มี YouTube`:''}`;
     loadVoices(); updateQuizTabBadge();
     if(document.getElementById('page-analytics').classList.contains('active'))renderAnalytics(rows);
     if(document.getElementById('page-review').classList.contains('active'))renderReview(rows);
@@ -740,9 +841,20 @@ async function loadSheet(){
   }finally{btn.classList.remove('loading');}
 }
 
-document.getElementById('tableBody').addEventListener('click',function(e){
-  const btn=e.target.closest('.speak-btn,.speak-sm');if(!btn)return;
-  const text=btn.dataset.text;if(text)speak(text,btn);
+/* Delegated click handler for table body */
+document.getElementById('tableBody').addEventListener('click', function(e) {
+  // TTS speak button
+  const speakBtn = e.target.closest('.speak-btn,.speak-sm');
+  if (speakBtn) { const text=speakBtn.dataset.text; if(text)speak(text,speakBtn); return; }
+
+  // YouTube button in table
+  const ytBtn = e.target.closest('.yt-btn');
+  if (ytBtn) {
+    const url = ytBtn.dataset.yturl;
+    const phrase = ytBtn.dataset.phrase;
+    if (url) openYTModal(url, phrase);
+    return;
+  }
 });
 
 /* ═══════════════════════════════════════════════════════════════
@@ -750,69 +862,55 @@ document.getElementById('tableBody').addEventListener('click',function(e){
 ═══════════════════════════════════════════════════════════════ */
 function updateQuizTabBadge(){
   const badge=document.getElementById('quizTabBadge');
-  if(isSunday()&&!quizDoneThisWeek()){badge.style.display='inline';} else{badge.style.display='none';}
+  badge.style.display=(isSunday()&&!quizDoneThisWeek())?'inline':'none';
 }
 
 /* ═══════════════════════════════════════════════════════════════
    QUIZ DASHBOARD
 ═══════════════════════════════════════════════════════════════ */
 function renderQuizDashboard(){
-  // Show dashboard, hide runner & result
   document.getElementById('quizDashboard').style.display='block';
   document.getElementById('quizRunner').style.display='none';
   document.getElementById('quizResult').style.display='none';
 
   const sun=isSunday(); const done=quizDoneThisWeek();
-  const dayEl=document.getElementById('quizDayStatus');
-  dayEl.textContent= sun ? 'วันอาทิตย์นี้ 🗓' : `ทดสอบได้ทุกวันอาทิตย์`;
+  document.getElementById('quizDayStatus').textContent=sun?'วันอาทิตย์นี้ 🗓':'ทดสอบได้ทุกวันอาทิตย์';
 
   const icon=document.getElementById('quizStatusIcon');
   const title=document.getElementById('quizStatusTitle');
   const desc=document.getElementById('quizStatusDesc');
   const countdown=document.getElementById('quizCountdown');
   const startBtn=document.getElementById('quizStartBtn');
-
   const hasWords=(window._allRows||[]).filter(r=>(r[2]||'').trim()&&(r[4]||'').trim()).length>=4;
 
   if(!hasWords){
     icon.textContent='📭'; title.textContent='ยังไม่มีข้อมูลเพียงพอ';
-    desc.textContent='ต้องการคำศัพท์อย่างน้อย 4 คำ (พร้อมความหมาย) เพื่อสร้างแบบทดสอบ กรุณาเพิ่มคำศัพท์ใน Google Sheets แล้วกด "อัปเดตข้อมูล"';
-    countdown.textContent=''; startBtn.disabled=true; startBtn.textContent='ยังไม่พร้อม';
+    desc.textContent='ต้องการคำศัพท์อย่างน้อย 4 คำ'; countdown.textContent=''; startBtn.disabled=true; startBtn.textContent='ยังไม่พร้อม';
   } else if(done&&sun){
     icon.textContent='✅'; title.textContent='ทดสอบประจำสัปดาห์เสร็จแล้ว!';
-    desc.textContent='คุณทำแบบทดสอบสัปดาห์นี้เสร็จแล้ว แบบทดสอบถัดไปจะพร้อมในวันอาทิตย์หน้า';
-    countdown.textContent=''; startBtn.disabled=false; startBtn.textContent='ทดสอบอีกครั้ง →';
+    desc.textContent='คุณทำแบบทดสอบสัปดาห์นี้เสร็จแล้ว'; countdown.textContent=''; startBtn.disabled=false; startBtn.textContent='ทดสอบอีกครั้ง →';
   } else if(sun){
     icon.textContent='🎯'; title.textContent='วันนี้มีแบบทดสอบประจำสัปดาห์!';
-    desc.textContent='ถึงเวลาทดสอบคำศัพท์ที่เรียนมาทั้งสัปดาห์แล้ว! มีทั้งเติมคำ เลือกตอบ และฟังเสียง';
-    countdown.textContent=''; startBtn.disabled=false; startBtn.textContent='เริ่มทดสอบ →';
+    desc.textContent='ถึงเวลาทดสอบคำศัพท์ที่เรียนมาทั้งสัปดาห์แล้ว!'; countdown.textContent=''; startBtn.disabled=false; startBtn.textContent='เริ่มทดสอบ →';
   } else {
     icon.textContent='📅'; title.textContent='แบบทดสอบประจำสัปดาห์';
     desc.textContent='แบบทดสอบจะเปิดทุกวันอาทิตย์ ระหว่างนี้คุณสามารถฝึกได้เสมอ!';
     countdown.textContent=formatCountdown()?`⏰ ${formatCountdown()}ถึงวันอาทิตย์`:'';
     startBtn.disabled=false; startBtn.textContent='ฝึกซ้อม (ไม่บันทึกผล) →';
   }
-
   renderQuizHistory();
   renderQuizProgressChart();
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   QUIZ HISTORY CARDS
-═══════════════════════════════════════════════════════════════ */
 function renderQuizHistory(){
   const history=getQuizHistory().slice().reverse();
   const el=document.getElementById('quizHistoryGrid');
-  if(!history.length){
-    el.innerHTML=`<div class="no-history">📭 ยังไม่มีประวัติการสอบ<br><span style="font-size:0.78rem;color:var(--muted)">เริ่มทดสอบแบบฝึกหัดแรกได้เลย!</span></div>`;
-    return;
-  }
+  if(!history.length){el.innerHTML=`<div class="no-history">📭 ยังไม่มีประวัติการสอบ</div>`;return;}
   el.innerHTML=`<div class="quiz-history-grid">${history.slice(0,12).map(h=>{
     const g=getGrade(h.pct); const gClass='grade-'+g.toLowerCase();
     const d=new Date(h.date).toLocaleDateString('th-TH',{weekday:'short',year:'numeric',month:'short',day:'numeric'});
-    const isPractice=h.practice;
     return `<div class="quiz-history-card ${gClass}">
-      <div class="qhc-date">${d}${isPractice?' <span style="color:var(--blue);font-size:0.62rem">(ฝึกซ้อม)</span>':''}</div>
+      <div class="qhc-date">${d}${h.practice?' <span style="color:var(--blue);font-size:0.62rem">(ฝึกซ้อม)</span>':''}</div>
       <div class="qhc-score">${h.score}<span> / ${h.total}</span></div>
       <div class="qhc-grade">${g}</div>
       <div class="qhc-detail">${h.pct}% · ${h.time}s</div>
@@ -821,37 +919,18 @@ function renderQuizHistory(){
   }).join('')}</div>`;
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   QUIZ PROGRESS CHART
-═══════════════════════════════════════════════════════════════ */
 let quizChartInst=null;
 function renderQuizProgressChart(){
   const history=getQuizHistory();
-  if(!history.length){
-    const c=document.getElementById('quizProgressChart');if(c){const ctx=c.getContext('2d');ctx.clearRect(0,0,c.width,c.height);}
-    return;
-  }
+  if(!history.length)return;
   const labels=history.map(h=>new Date(h.date).toLocaleDateString('th-TH',{month:'short',day:'numeric'}));
   const data=history.map(h=>h.pct);
   if(quizChartInst){quizChartInst.destroy();quizChartInst=null;}
   const canvas=document.getElementById('quizProgressChart');if(!canvas)return;
   quizChartInst=new Chart(canvas,{
     type:'line',
-    data:{labels,datasets:[{
-      label:'คะแนน %',data,
-      borderColor:'#c9922a',backgroundColor:'rgba(201,146,42,0.08)',
-      borderWidth:2.5,pointRadius:5,pointBackgroundColor:data.map(p=>p>=80?'#1e8449':p>=60?'#c9922a':'#c0392b'),
-      pointBorderColor:'white',pointBorderWidth:2,fill:true,tension:0.35
-    }]},
-    options:{
-      responsive:true,maintainAspectRatio:false,
-      plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>`${ctx.raw}% (${getGrade(ctx.raw)})`}}},
-      scales:{
-        x:{ticks:{font:{family:'Sarabun',size:11},color:'#8b7355'},grid:{color:'rgba(0,0,0,0.05)'}},
-        y:{min:0,max:100,ticks:{font:{family:'Sarabun',size:11},color:'#8b7355',callback:v=>v+'%'},grid:{color:'rgba(0,0,0,0.07)'},
-           afterDataLimits(scale){scale.max=100;}}
-      }
-    }
+    data:{labels,datasets:[{label:'คะแนน %',data,borderColor:'#c9922a',backgroundColor:'rgba(201,146,42,0.08)',borderWidth:2.5,pointRadius:5,pointBackgroundColor:data.map(p=>p>=80?'#1e8449':p>=60?'#c9922a':'#c0392b'),pointBorderColor:'white',pointBorderWidth:2,fill:true,tension:0.35}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>`${ctx.raw}% (${getGrade(ctx.raw)})`}}},scales:{x:{ticks:{font:{family:'Sarabun',size:11},color:'#8b7355'},grid:{color:'rgba(0,0,0,0.05)'}},y:{min:0,max:100,ticks:{font:{family:'Sarabun',size:11},color:'#8b7355',callback:v=>v+'%'},grid:{color:'rgba(0,0,0,0.07)'}}}}
   });
 }
 
@@ -861,38 +940,18 @@ function renderQuizProgressChart(){
 let quizState={};
 
 function buildQuestions(rows){
-  // Filter rows with English + meaning
   const vocab=rows.filter(r=>(r[2]||'').trim()&&(r[4]||'').trim());
   if(vocab.length<4)return[];
-
   const questions=[];
-  const sample=shuffle(vocab).slice(0, Math.min(15, vocab.length));
-
+  const sample=shuffle(vocab).slice(0,Math.min(15,vocab.length));
   sample.forEach((row,idx)=>{
-    const eng=(row[2]||'').trim();
-    const mean=(row[4]||'').trim();
-    const phon=(row[3]||'').trim();
+    const eng=(row[2]||'').trim(),mean=(row[4]||'').trim(),phon=(row[3]||'').trim();
     const examples=[row[5],row[7],row[9]].filter(x=>(x||'').trim());
-
-    // Determine question types we can make
-    const qTypes=[];
-
-    // 1. MCQ: English → Thai (always possible if ≥4 vocab)
-    qTypes.push('mcq_en_th');
-
-    // 2. MCQ: Thai → English (always possible if ≥4 vocab)
-    qTypes.push('mcq_th_en');
-
-    // 3. Fill in the blank from example sentence (if example exists)
-    if(examples.length>0) qTypes.push('fill_blank');
-
-    // 4. Listening: hear audio, pick meaning
+    const qTypes=['mcq_en_th','mcq_th_en'];
+    if(examples.length>0)qTypes.push('fill_blank');
     qTypes.push('listen_mcq');
-
-    // Pick a question type (distribute evenly)
     const qType=qTypes[idx%qTypes.length];
     const distractors=shuffle(vocab.filter(v=>(v[2]||'').trim()!==eng)).slice(0,3);
-
     if(qType==='mcq_en_th'){
       const opts=shuffle([{text:mean,correct:true},...distractors.map(d=>({text:(d[4]||'').trim(),correct:false}))]);
       questions.push({type:'mcq_en_th',typeLabel:'เลือกความหมาย',prompt:eng,phonetic:phon,sub:'เลือกความหมายภาษาไทยที่ถูกต้อง',options:opts,answer:mean,eng,mean});
@@ -901,10 +960,9 @@ function buildQuestions(rows){
       questions.push({type:'mcq_th_en',typeLabel:'เลือกคำภาษาอังกฤษ',prompt:mean,sub:'เลือกคำหรือประโยคภาษาอังกฤษที่ตรงกัน',options:opts,answer:eng,eng,mean});
     } else if(qType==='fill_blank'){
       const ex=(examples[0]||'').trim();
-      // Blank out the keyword (first occurrence, case-insensitive)
       const re=new RegExp(eng.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'i');
       const blanked=re.test(ex)?ex.replace(re,'___________'):ex+' (เติม: ?)';
-      questions.push({type:'fill_blank',typeLabel:'เติมคำในช่องว่าง',prompt:blanked,sub:`เติมคำที่หายไปให้ถูกต้อง`,answer:eng,eng,mean,hint:mean});
+      questions.push({type:'fill_blank',typeLabel:'เติมคำในช่องว่าง',prompt:blanked,sub:'เติมคำที่หายไปให้ถูกต้อง',answer:eng,eng,mean,hint:mean});
     } else if(qType==='listen_mcq'){
       const opts=shuffle([{text:mean,correct:true},...distractors.map(d=>({text:(d[4]||'').trim(),correct:false}))]);
       questions.push({type:'listen_mcq',typeLabel:'ฟังแล้วเลือกความหมาย',prompt:'🔊 ฟังเสียงแล้วเลือกความหมาย',sub:'กดปุ่มด้านล่างเพื่อฟัง จากนั้นเลือกความหมายที่ถูกต้อง',options:opts,answer:mean,eng,mean,audioText:eng});
@@ -916,14 +974,9 @@ function buildQuestions(rows){
 function startQuiz(){
   const rows=(window._allRows||[]);
   const questions=buildQuestions(rows);
-  if(!questions.length){alert('ไม่มีคำศัพท์เพียงพอ (ต้องการอย่างน้อย 4 คำพร้อมความหมาย)');return;}
-
+  if(!questions.length){alert('ไม่มีคำศัพท์เพียงพอ');return;}
   const isPractice=!isSunday()||quizDoneThisWeek();
-  quizState={
-    questions, current:0, score:0, wrongItems:[], startTime:Date.now(),
-    isPractice, answered:false, usedTypes:[]
-  };
-
+  quizState={questions,current:0,score:0,wrongItems:[],startTime:Date.now(),isPractice,answered:false};
   document.getElementById('quizDashboard').style.display='none';
   document.getElementById('quizRunner').style.display='block';
   document.getElementById('quizResult').style.display='none';
@@ -932,23 +985,16 @@ function startQuiz(){
 
 function renderQuestion(){
   const{questions,current}=quizState;
-  const q=questions[current];
-  const total=questions.length;
-  const pct=Math.round((current/total)*100);
-
+  const q=questions[current];const total=questions.length;const pct=Math.round((current/total)*100);
   document.getElementById('qNumText').textContent=current+1;
   document.getElementById('qProgBar').style.width=pct+'%';
   document.getElementById('qProgText').textContent=`${current+1} / ${total}`;
   document.getElementById('qScoreLive').textContent=`✓ ${quizState.score}`;
-
   quizState.answered=false;
   const nextBtn=document.getElementById('nextBtn');
   nextBtn.classList.remove('show');
   nextBtn.textContent=current===total-1?'ดูผลลัพธ์ →':'ข้อถัดไป →';
-
-  let html='';
-  html+=`<div class="q-type-chip">${q.typeLabel}</div>`;
-
+  let html=`<div class="q-type-chip">${q.typeLabel}</div>`;
   if(q.type==='listen_mcq'){
     html+=`<div class="q-prompt" style="font-size:1.1rem;">🔊 ฟังเสียงแล้วเลือกความหมาย</div>`;
     html+=`<div class="q-sub">${q.sub}</div>`;
@@ -956,10 +1002,9 @@ function renderQuestion(){
   } else {
     const isEn=q.type==='mcq_en_th'||q.type==='fill_blank';
     html+=`<div class="q-prompt" style="${!isEn?'font-size:1.1rem;font-style:normal;':''}">${esc(q.prompt)}</div>`;
-    if(q.phonetic&&q.type==='mcq_en_th') html+=`<div class="q-sub" style="margin-bottom:6px;">${esc(q.phonetic)}</div>`;
+    if(q.phonetic&&q.type==='mcq_en_th')html+=`<div class="q-sub" style="margin-bottom:6px;">${esc(q.phonetic)}</div>`;
     html+=`<div class="q-sub">${q.sub}</div>`;
   }
-
   if(q.type==='fill_blank'){
     html+=`<div class="q-hint">💡 คำใบ้: ${esc(q.hint)}</div>`;
     html+=`<input class="fill-input" id="fillInput" type="text" placeholder="พิมพ์คำภาษาอังกฤษ..." autocomplete="off" autocorrect="off" spellcheck="false" />`;
@@ -967,38 +1012,21 @@ function renderQuestion(){
   } else {
     html+=`<div class="mcq-options">${q.options.map((o,i)=>`<button class="mcq-opt" data-idx="${i}" data-correct="${o.correct?'1':'0'}" data-eng="${esc(q.eng)}" data-mean="${esc(q.mean)}" onclick="selectMCQ(this)"><span class="opt-letter">${'ABCD'[i]}</span>${esc(o.text)}</button>`).join('')}</div>`;
   }
-
   html+=`<div class="q-feedback" id="qFeedback"></div>`;
   document.getElementById('questionCard').innerHTML=html;
-
-  // Auto-focus fill input
-  if(q.type==='fill_blank') setTimeout(()=>{ const el=document.getElementById('fillInput'); if(el)el.focus(); },100);
-
-  // Enter key for fill
+  if(q.type==='fill_blank')setTimeout(()=>{const el=document.getElementById('fillInput');if(el)el.focus();},100);
   const fi=document.getElementById('fillInput');
-  if(fi) fi.addEventListener('keydown',e=>{if(e.key==='Enter')submitFill();});
+  if(fi)fi.addEventListener('keydown',e=>{if(e.key==='Enter')submitFill();});
 }
 
 function selectMCQ(btn){
   if(quizState.answered)return;
   quizState.answered=true;
-  const correct = btn.dataset.correct === '1';
-  const eng     = btn.dataset.eng  || '';
-  const mean    = btn.dataset.mean || '';
-  const opts    = document.querySelectorAll('.mcq-opt');
-  opts.forEach(o=>o.disabled=true);
-
-  if(correct){
-    btn.classList.add('correct');
-    quizState.score++;
-    showFeedback(true,eng,mean);
-  } else {
-    btn.classList.add('wrong');
-    // Highlight the correct option
-    opts.forEach(o=>{ if(o.dataset.correct==='1') o.classList.add('correct'); });
-    quizState.wrongItems.push({eng,mean});
-    showFeedback(false,eng,mean);
-  }
+  const correct=btn.dataset.correct==='1';
+  const eng=btn.dataset.eng||'',mean=btn.dataset.mean||'';
+  document.querySelectorAll('.mcq-opt').forEach(o=>o.disabled=true);
+  if(correct){btn.classList.add('correct');quizState.score++;showFeedback(true,eng,mean);}
+  else{btn.classList.add('wrong');document.querySelectorAll('.mcq-opt').forEach(o=>{if(o.dataset.correct==='1')o.classList.add('correct');});quizState.wrongItems.push({eng,mean});showFeedback(false,eng,mean);}
   document.getElementById('qScoreLive').textContent=`✓ ${quizState.score}`;
   document.getElementById('nextBtn').classList.add('show');
 }
@@ -1006,17 +1034,11 @@ function selectMCQ(btn){
 function submitFill(){
   if(quizState.answered)return;
   const q=quizState.questions[quizState.current];
-  const input=document.getElementById('fillInput');
-  const submitBtn=document.getElementById('fillSubmit');
+  const input=document.getElementById('fillInput'),submitBtn=document.getElementById('fillSubmit');
   if(!input||!submitBtn)return;
-  const userAns=input.value.trim().toLowerCase();
-  const correct=q.answer.trim().toLowerCase();
+  const userAns=input.value.trim().toLowerCase(),correct=q.answer.trim().toLowerCase();
   const isCorrect=userAns===correct||levenshtein(userAns,correct)<=1;
-
-  quizState.answered=true;
-  input.disabled=true;
-  submitBtn.disabled=true;
-
+  quizState.answered=true;input.disabled=true;submitBtn.disabled=true;
   if(isCorrect){input.classList.add('correct');quizState.score++;showFeedback(true,q.eng,q.mean);}
   else{input.classList.add('wrong');quizState.wrongItems.push({eng:q.eng,mean:q.mean});showFeedback(false,q.eng,q.mean);}
   document.getElementById('qScoreLive').textContent=`✓ ${quizState.score}`;
@@ -1030,19 +1052,14 @@ function levenshtein(a,b){
 }
 
 function showFeedback(correct,eng,mean){
-  const el=document.getElementById('qFeedback');
-  if(!el)return;
+  const el=document.getElementById('qFeedback');if(!el)return;
   el.className='q-feedback show '+(correct?'correct':'wrong');
-  el.innerHTML=correct
-    ?`<strong>✓ ถูกต้อง!</strong>${eng} = ${mean}`
-    :`<strong>✗ ผิด</strong>คำตอบที่ถูก: <em>${eng}</em> = ${mean}`;
+  el.innerHTML=correct?`<strong>✓ ถูกต้อง!</strong>${eng} = ${mean}`:`<strong>✗ ผิด</strong>คำตอบที่ถูก: <em>${eng}</em> = ${mean}`;
 }
 
 function nextQuestion(){
-  const{questions,current}=quizState;
-  if(current+1>=questions.length){showResult();return;}
-  quizState.current++;
-  renderQuestion();
+  if(quizState.current+1>=quizState.questions.length){showResult();return;}
+  quizState.current++;renderQuestion();
 }
 
 function confirmQuit(){
@@ -1053,28 +1070,18 @@ function confirmQuit(){
   }
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   RESULT
-═══════════════════════════════════════════════════════════════ */
 function showResult(){
   const{score,questions,wrongItems,startTime,isPractice}=quizState;
-  const total=questions.length;
-  const pct=Math.round((score/total)*100);
+  const total=questions.length,pct=Math.round((score/total)*100);
   const timeSec=Math.round((Date.now()-startTime)/1000);
   const grade=getGrade(pct);
-
-  // Save to history
-  if(!isPractice) markQuizDone();
+  if(!isPractice)markQuizDone();
   const h=getQuizHistory();
   h.push({date:new Date().toISOString(),score,total,pct,time:timeSec,grade,practice:isPractice,types:[...new Set(questions.map(q=>q.typeLabel))]});
-  saveQuizHistory(h);
-  updateQuizTabBadge();
-
+  saveQuizHistory(h);updateQuizTabBadge();
   document.getElementById('quizRunner').style.display='none';
   document.getElementById('quizResult').style.display='block';
-
   const wrongHtml=wrongItems.length?`<div class="wrong-list"><div class="wrong-list-title">📋 คำที่ตอบผิด (${wrongItems.length} คำ)</div>${wrongItems.map(w=>`<div class="wrong-item"><div class="wrong-item-en">${esc(w.eng)}</div><div class="wrong-item-th">${esc(w.mean)}</div></div>`).join('')}</div>`:'';
-
   document.getElementById('quizResult').innerHTML=`
     <div class="result-card">
       <div class="result-emoji">${{S:'🏆',A:'🌟',B:'👍',C:'💪',D:'📖'}[grade]||'📖'}</div>
@@ -1090,43 +1097,18 @@ function showResult(){
         <button class="rbtn rbtn-primary" onclick="renderQuizDashboard()">← ดูแดชบอร์ด</button>
         <button class="rbtn rbtn-secondary" onclick="startQuiz()">ทำอีกครั้ง ↻</button>
       </div>
-    </div>
-    ${wrongHtml}
-  `;
-}
-
-function renderQuizDashboard(){
-  document.getElementById('quizDashboard').style.display='block';
-  document.getElementById('quizRunner').style.display='none';
-  document.getElementById('quizResult').style.display='none';
-  // Re-render status
-  const sun=isSunday(); const done=quizDoneThisWeek();
-  const dayEl=document.getElementById('quizDayStatus');
-  dayEl.textContent=sun?'วันอาทิตย์นี้ 🗓':'ทดสอบได้ทุกวันอาทิตย์';
-  const icon=document.getElementById('quizStatusIcon');
-  const title=document.getElementById('quizStatusTitle');
-  const desc=document.getElementById('quizStatusDesc');
-  const countdown=document.getElementById('quizCountdown');
-  const startBtn=document.getElementById('quizStartBtn');
-  const hasWords=(window._allRows||[]).filter(r=>(r[2]||'').trim()&&(r[4]||'').trim()).length>=4;
-  if(!hasWords){icon.textContent='📭';title.textContent='ยังไม่มีข้อมูลเพียงพอ';desc.textContent='ต้องการคำศัพท์อย่างน้อย 4 คำ';countdown.textContent='';startBtn.disabled=true;startBtn.textContent='ยังไม่พร้อม';}
-  else if(done&&sun){icon.textContent='✅';title.textContent='ทดสอบประจำสัปดาห์เสร็จแล้ว!';desc.textContent='คุณทำแบบทดสอบสัปดาห์นี้เสร็จแล้ว แบบทดสอบถัดไปจะพร้อมในวันอาทิตย์หน้า';countdown.textContent='';startBtn.disabled=false;startBtn.textContent='ทดสอบอีกครั้ง →';}
-  else if(sun){icon.textContent='🎯';title.textContent='วันนี้มีแบบทดสอบประจำสัปดาห์!';desc.textContent='ถึงเวลาทดสอบแล้ว!';countdown.textContent='';startBtn.disabled=false;startBtn.textContent='เริ่มทดสอบ →';}
-  else{icon.textContent='📅';title.textContent='แบบทดสอบประจำสัปดาห์';desc.textContent='แบบทดสอบจะเปิดทุกวันอาทิตย์ ระหว่างนี้คุณสามารถฝึกได้เสมอ!';countdown.textContent=formatCountdown()?`⏰ ${formatCountdown()}ถึงวันอาทิตย์`:'';startBtn.disabled=false;startBtn.textContent='ฝึกซ้อม (ไม่บันทึกผล) →';}
-  renderQuizHistory();
-  renderQuizProgressChart();
+    </div>${wrongHtml}`;
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   ANALYTICS (unchanged from previous version)
+   ANALYTICS
 ═══════════════════════════════════════════════════════════════ */
-let barChartInstance=null, cumulChartInstance=null, currentBarView='daily';
+let barChartInstance=null,cumulChartInstance=null,currentBarView='daily';
 function parseDate(str){if(!str)return null;str=str.trim();let m;m=str.match(/^(\d{1,2})\/(\d{1,2})\/(\d{2,4})$/);if(m){let y=parseInt(m[3]);if(y<100)y+=2000;return new Date(y,parseInt(m[2])-1,parseInt(m[1]));}m=str.match(/^(\d{4})-(\d{2})-(\d{2})$/);if(m)return new Date(parseInt(m[1]),parseInt(m[2])-1,parseInt(m[3]));const d=new Date(str);return isNaN(d)?null:d;}
 function fmt(d,mode){if(!d)return'ไม่ระบุ';if(mode==='daily')return`${d.getDate()}/${d.getMonth()+1}/${d.getFullYear()}`;if(mode==='monthly')return['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'][d.getMonth()]+' '+d.getFullYear();const day=d.getDay();const diff=d.getDate()-day+(day===0?-6:1);const mon=new Date(d.setDate(diff));return`สัปดาห์ ${mon.getDate()}/${mon.getMonth()+1}`;}
 function groupByDate(rows,mode){const map=new Map();rows.forEach(r=>{const eng=(r[2]||'').trim();if(!eng)return;const d=parseDate(r[1]);const key=d?fmt(d,mode):'ไม่ระบุวันที่';const sortKey=d?d.getTime():0;if(!map.has(key))map.set(key,{count:0,sortKey});map.get(key).count++;});return[...map.entries()].sort((a,b)=>a[1].sortKey-b[1].sortKey).map(([label,v])=>({label,count:v.count}));}
 function calcStreak(rows){const dc=new Map();rows.forEach(r=>{const eng=(r[2]||'').trim();if(!eng)return;const d=parseDate(r[1]);if(!d)return;const k=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;dc.set(k,(dc.get(k)||0)+1);});const days=[...dc.keys()].sort();if(!days.length)return{current:0,max:0,activeDays:0};let max=1,cur=1;for(let i=1;i<days.length;i++){const diff=(new Date(days[i])-new Date(days[i-1]))/86400000;if(diff===1){cur++;max=Math.max(max,cur);}else cur=1;}const ts=(()=>{const n=new Date();return`${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,'0')}-${String(n.getDate()).padStart(2,'0')}`;})();let streak=0;const ds=new Set(days);let check=new Date(ts);while(ds.has(`${check.getFullYear()}-${String(check.getMonth()+1).padStart(2,'0')}-${String(check.getDate()).padStart(2,'0')}`)){streak++;check.setDate(check.getDate()-1);}return{current:streak,max,activeDays:days.length};}
 function buildHeatmap(rows){const dc=new Map();rows.forEach(r=>{const eng=(r[2]||'').trim();if(!eng)return;const d=parseDate(r[1]);if(!d)return;const k=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;dc.set(k,(dc.get(k)||0)+1);});const mx=Math.max(...dc.values(),1);const today=new Date();const sd=new Date(today);sd.setDate(today.getDate()-363);sd.setDate(sd.getDate()-sd.getDay());const weeks=[];let d=new Date(sd);while(d<=today){const w=[];for(let i=0;i<7;i++){const k=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;w.push({date:new Date(d),k,count:dc.get(k)||0});d.setDate(d.getDate()+1);}weeks.push(w);}const dl=['อา','จ','อ','พ','พฤ','ศ','ส'];const mo=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];function cc(c){if(c===0)return'#f0e8d8';const r=c/mx;if(r<0.25)return'#f5c891';if(r<0.5)return'#e8a838';if(r<0.75)return'#c9922a';return'#1a1a2e';}let ml='<div style="display:flex;gap:4px;padding-left:32px;margin-bottom:2px;">';let lm=-1;weeks.forEach(w=>{const m=w[0].date.getMonth();if(m!==lm){ml+=`<div style="font-size:0.6rem;color:var(--muted);width:18px;text-align:center;overflow:visible;white-space:nowrap">${mo[m]}</div>`;lm=m;}else ml+=`<div style="width:18px;"></div>`;});ml+='</div>';let g='<div style="display:flex;gap:0;"><div style="display:flex;flex-direction:column;gap:4px;margin-right:4px;">'+dl.map(l=>`<div style="height:18px;width:24px;text-align:right;font-size:0.6rem;color:var(--muted);line-height:18px;">${l}</div>`).join('')+'</div>';weeks.forEach(w=>{g+='<div style="display:flex;flex-direction:column;gap:4px;">';w.forEach(cell=>{const ds=`${cell.date.getDate()}/${cell.date.getMonth()+1}/${cell.date.getFullYear()}`;const ti=cell.count>0?`${ds}: ${cell.count} คำ`:ds;g+=`<div class="heatmap-cell" style="background:${cc(cell.count)};" title="${ti}" data-count="${cell.count}"></div>`;});g+='</div>';});g+='</div>';return`<div style="overflow-x:auto;padding-bottom:4px;">${ml}${g}<div class="heatmap-legend"><span>น้อย</span><div class="heatmap-legend-swatch" style="background:#f0e8d8;border:1px solid var(--line);"></div><div class="heatmap-legend-swatch" style="background:#f5c891;"></div><div class="heatmap-legend-swatch" style="background:#e8a838;"></div><div class="heatmap-legend-swatch" style="background:#c9922a;"></div><div class="heatmap-legend-swatch" style="background:#1a1a2e;"></div><span>มาก</span></div></div>`;}
-
 function renderAnalytics(rows){
   const valid=rows.filter(r=>(r[2]||'').trim());const total=valid.length;const streak=calcStreak(rows);
   const avg=streak.activeDays>0?(total/streak.activeDays).toFixed(1):0;
@@ -1140,7 +1122,7 @@ function drawBarChart(rows,mode){const data=groupByDate(rows,mode);const labels=
 function drawCumulChart(rows){const data=groupByDate(rows,'daily');const labels=data.map(d=>d.label);let cum=0;const cd=data.map(d=>{cum+=d.count;return cum;});if(cumulChartInstance){cumulChartInstance.destroy();cumulChartInstance=null;}const canvas=document.getElementById('cumulChart');if(!canvas)return;cumulChartInstance=new Chart(canvas,{type:'line',data:{labels,datasets:[{label:'คำสะสม',data:cd,borderColor:'#1a1a2e',backgroundColor:'rgba(26,26,46,0.07)',borderWidth:2,pointRadius:cd.length<20?4:2,pointBackgroundColor:'#c9922a',pointBorderColor:'#c9922a',fill:true,tension:0.35}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{title:ctx=>ctx[0].label,label:ctx=>` รวม ${ctx.raw} คำ`}}},scales:{x:{ticks:{font:{family:'Sarabun',size:11},color:'#8b7355',maxRotation:45,autoSkip:true,maxTicksLimit:20},grid:{color:'rgba(0,0,0,0.05)'}},y:{beginAtZero:true,ticks:{font:{family:'Sarabun',size:11},color:'#8b7355',precision:0},grid:{color:'rgba(0,0,0,0.07)'}}}}});}
 
 /* ═══════════════════════════════════════════════════════════════
-   REVIEW PAGE (unchanged)
+   REVIEW PAGE
 ═══════════════════════════════════════════════════════════════ */
 let reviewFilter='all';
 function getTier(c){if(c===0)return'tier-0';if(c<=2)return'tier-1';if(c<=5)return'tier-2';if(c<=9)return'tier-3';return'tier-4';}
@@ -1153,28 +1135,145 @@ function updateReviewSummaryBar(){
   const el=document.getElementById('reviewSummaryBar');
   if(el)el.innerHTML=`<div class="rev-sum-chip highlight"><strong>${total}</strong> คำทั้งหมด</div><div class="rev-sum-chip highlight-green"><strong>${reviewed}</strong> ทบทวนแล้ว</div><div class="rev-sum-chip highlight-red"><strong>${total-reviewed}</strong> ยังไม่ได้ทบทวน</div><div class="rev-sum-chip highlight-purple"><strong>${mastered}</strong> เชี่ยวชาญ (≥10 ครั้ง)</div><div class="rev-sum-chip"><strong>${totalPlays}</strong> ครั้งรวมทั้งหมด</div>`;
 }
-function renderReview(rows,filterOverride){
-  const filter=filterOverride!==undefined?filterOverride:reviewFilter;reviewFilter=filter;
-  const valid=rows.filter(r=>(r[2]||'').trim());const counts=getReviewCounts();
+
+function renderReview(rows, filterOverride){
+  const filter=filterOverride!==undefined?filterOverride:reviewFilter; reviewFilter=filter;
+  const valid=rows.filter(r=>(r[2]||'').trim());
+  const counts=getReviewCounts();
   const searchVal=(document.getElementById('reviewSearchInput')||{}).value||'';
   const sortVal=(document.getElementById('reviewSortSelect')||{}).value||'date-desc';
-  let filtered=valid.filter(r=>{const eng=(r[2]||'').trim();const mean=(r[4]||'').trim();const cnt=counts[eng]||0;if(searchVal){const q=searchVal.toLowerCase();if(!eng.toLowerCase().includes(q)&&!mean.toLowerCase().includes(q))return false;}if(filter==='unreviewed')return cnt===0;if(filter==='low')return cnt>=1&&cnt<=5;if(filter==='medium')return cnt>=6&&cnt<=9;if(filter==='mastered')return cnt>=10;return true;});
-  filtered.sort((a,b)=>{const eA=(a[2]||'').trim(),eB=(b[2]||'').trim();const cA=counts[eA]||0,cB=counts[eB]||0;if(sortVal==='count-desc')return cB-cA;if(sortVal==='count-asc')return cA-cB;if(sortVal==='alpha')return eA.localeCompare(eB);return 0;});
-  const total=valid.length;const reviewed=valid.filter(r=>(counts[(r[2]||'').trim()]||0)>0).length;const mastered=valid.filter(r=>(counts[(r[2]||'').trim()]||0)>=10).length;const totalPlays=Object.values(counts).reduce((a,b)=>a+b,0);
-  const fc={all:valid.length,unreviewed:valid.filter(r=>(counts[(r[2]||'').trim()]||0)===0).length,low:valid.filter(r=>{const c=counts[(r[2]||'').trim()]||0;return c>=1&&c<=5;}).length,medium:valid.filter(r=>{const c=counts[(r[2]||'').trim()]||0;return c>=6&&c<=9;}).length,mastered:valid.filter(r=>(counts[(r[2]||'').trim()]||0)>=10).length};
-  const cardsHtml=filtered.length===0?`<div class="review-empty">ไม่พบคำที่ตรงกับตัวกรองนี้</div>`:filtered.map(r=>{const eng=(r[2]||'').trim();const mean=(r[4]||'').trim();const date=(r[1]||'').trim();const cnt=counts[eng]||0;const tier=getTier(cnt);const badge=getTierLabel(cnt);return`<div class="review-card ${tier}" data-key="${esc(eng)}"><div class="review-card-top"><div style="flex:1"><div class="review-english">${esc(eng)}</div>${mean?`<div class="review-meaning">${esc(mean)}</div>`:''}</div><div class="review-count-wrap"><div class="review-count-bubble" data-key="${esc(eng)}">${cnt}</div><div class="review-count-label">ครั้ง</div></div></div><div class="review-card-bottom"><div class="review-date">${date?'📅 '+esc(date):''} ${badge}</div><button class="btn-review-speak" data-text="${esc(eng)}" data-review-key="${esc(eng)}">🔊 ฟัง +1</button><button class="btn-plus-one" data-review-key="${esc(eng)}">✔ +1</button></div></div>`;}).join('');
-  document.getElementById('reviewContent').innerHTML=`<div class="review-summary" id="reviewSummaryBar"><div class="rev-sum-chip highlight"><strong>${total}</strong> คำทั้งหมด</div><div class="rev-sum-chip highlight-green"><strong>${reviewed}</strong> ทบทวนแล้ว</div><div class="rev-sum-chip highlight-red"><strong>${total-reviewed}</strong> ยังไม่ได้ทบทวน</div><div class="rev-sum-chip highlight-purple"><strong>${mastered}</strong> เชี่ยวชาญ (≥10 ครั้ง)</div><div class="rev-sum-chip"><strong>${totalPlays}</strong> ครั้งรวมทั้งหมด</div></div><div class="review-controls"><input type="text" id="reviewSearchInput" class="review-search" placeholder="🔍 ค้นหาคำหรือความหมาย..." value="${esc(searchVal)}" oninput="onReviewSearch()" /><span class="review-sort-label">เรียงตาม</span><select id="reviewSortSelect" class="review-sort" onchange="onReviewSort()"><option value="date-desc" ${sortVal==='date-desc'?'selected':''}>วันที่เพิ่ม (ล่าสุดก่อน)</option><option value="date-asc" ${sortVal==='date-asc'?'selected':''}>วันที่เพิ่ม (เก่าสุดก่อน)</option><option value="count-desc" ${sortVal==='count-desc'?'selected':''}>ทบทวนมากสุด</option><option value="count-asc" ${sortVal==='count-asc'?'selected':''}>ทบทวนน้อยสุด</option><option value="alpha" ${sortVal==='alpha'?'selected':''}>เรียงตัวอักษร A-Z</option></select><button class="btn-reset-counts" onclick="onResetCounts()">🗑 รีเซ็ตทุกครั้ง</button></div><div class="review-filter-tabs"><button class="rev-filter-btn ${filter==='all'?'active':''}" onclick="onReviewFilter('all')">ทั้งหมด (${fc.all})</button><button class="rev-filter-btn ${filter==='unreviewed'?'active':''}" onclick="onReviewFilter('unreviewed')">⬜ ยังไม่ทบทวน (${fc.unreviewed})</button><button class="rev-filter-btn ${filter==='low'?'active':''}" onclick="onReviewFilter('low')">🟡 1–5 ครั้ง (${fc.low})</button><button class="rev-filter-btn ${filter==='medium'?'active':''}" onclick="onReviewFilter('medium')">🟠 6–9 ครั้ง (${fc.medium})</button><button class="rev-filter-btn ${filter==='mastered'?'active':''}" onclick="onReviewFilter('mastered')">✅ เชี่ยวชาญ ≥10 (${fc.mastered})</button></div><div class="review-grid" id="reviewGrid">${cardsHtml}</div>`;
-  document.getElementById('reviewGrid').addEventListener('click',function(e){
-    const sp=e.target.closest('.btn-review-speak');
-    if(sp){const text=sp.dataset.text;const key=sp.dataset.reviewKey;if(text)speak(text,sp,key);return;}
-    const pl=e.target.closest('.btn-plus-one');
-    if(pl){const key=pl.dataset.reviewKey;if(key){const nc=incrementReviewCount(key);const bubble=document.querySelector(`.review-count-bubble[data-key="${CSS.escape(key)}"]`);if(bubble){bubble.textContent=nc;const card=bubble.closest('.review-card');card.className='review-card '+getTier(nc)+' pop-anim';card.addEventListener('animationend',()=>card.classList.remove('pop-anim'),{once:true});const bottom=card.querySelector('.review-card-bottom .review-date');if(bottom){const dt=bottom.textContent.replace(/ยังไม่ได้ทบทวน|✓ เชี่ยวชาญ/g,'').trim();bottom.innerHTML=dt+' '+getTierLabel(nc);}updateReviewSummaryBar();}}}
+
+  let filtered=valid.filter(r=>{
+    const eng=(r[2]||'').trim(),mean=(r[4]||'').trim(),cnt=counts[eng]||0;
+    if(searchVal){const q=searchVal.toLowerCase();if(!eng.toLowerCase().includes(q)&&!mean.toLowerCase().includes(q))return false;}
+    if(filter==='unreviewed')return cnt===0;
+    if(filter==='low')return cnt>=1&&cnt<=5;
+    if(filter==='medium')return cnt>=6&&cnt<=9;
+    if(filter==='mastered')return cnt>=10;
+    return true;
+  });
+
+  filtered.sort((a,b)=>{
+    const eA=(a[2]||'').trim(),eB=(b[2]||'').trim();
+    const cA=counts[eA]||0,cB=counts[eB]||0;
+    if(sortVal==='count-desc')return cB-cA;
+    if(sortVal==='count-asc')return cA-cB;
+    if(sortVal==='alpha')return eA.localeCompare(eB);
+    return 0;
+  });
+
+  const total=valid.length;
+  const reviewed=valid.filter(r=>(counts[(r[2]||'').trim()]||0)>0).length;
+  const mastered=valid.filter(r=>(counts[(r[2]||'').trim()]||0)>=10).length;
+  const totalPlays=Object.values(counts).reduce((a,b)=>a+b,0);
+  const fc={
+    all:valid.length,
+    unreviewed:valid.filter(r=>(counts[(r[2]||'').trim()]||0)===0).length,
+    low:valid.filter(r=>{const c=counts[(r[2]||'').trim()]||0;return c>=1&&c<=5;}).length,
+    medium:valid.filter(r=>{const c=counts[(r[2]||'').trim()]||0;return c>=6&&c<=9;}).length,
+    mastered:valid.filter(r=>(counts[(r[2]||'').trim()]||0)>=10).length
+  };
+
+  const cardsHtml = filtered.length===0
+    ? `<div class="review-empty">ไม่พบคำที่ตรงกับตัวกรองนี้</div>`
+    : filtered.map(r=>{
+        const eng=(r[2]||'').trim();
+        const mean=(r[4]||'').trim();
+        const date=(r[1]||'').trim();
+        const ytUrl=(r[13]||'').trim(); // Column N = index 13
+        const cnt=counts[eng]||0;
+        const tier=getTier(cnt);
+        const badge=getTierLabel(cnt);
+
+        // YT button only if URL exists
+        const ytBtnHtml = ytUrl
+          ? `<button class="btn-review-yt" data-yturl="${esc(ytUrl)}" data-phrase="${esc(eng)}">▶ YouTube</button>`
+          : '';
+
+        return `<div class="review-card ${tier}" data-key="${esc(eng)}">
+          <div class="review-card-top">
+            <div style="flex:1">
+              <div class="review-english">${esc(eng)}</div>
+              ${mean?`<div class="review-meaning">${esc(mean)}</div>`:''}
+            </div>
+            <div class="review-count-wrap">
+              <div class="review-count-bubble" data-key="${esc(eng)}">${cnt}</div>
+              <div class="review-count-label">ครั้ง</div>
+            </div>
+          </div>
+          <div class="review-card-bottom">
+            <div class="review-date">${date?'📅 '+esc(date):''} ${badge}</div>
+            <button class="btn-review-speak" data-text="${esc(eng)}" data-review-key="${esc(eng)}">🔊 ฟัง +1</button>
+            ${ytBtnHtml}
+            <button class="btn-plus-one" data-review-key="${esc(eng)}">✔ +1</button>
+          </div>
+        </div>`;
+      }).join('');
+
+  document.getElementById('reviewContent').innerHTML = `
+    <div class="review-summary" id="reviewSummaryBar">
+      <div class="rev-sum-chip highlight"><strong>${total}</strong> คำทั้งหมด</div>
+      <div class="rev-sum-chip highlight-green"><strong>${reviewed}</strong> ทบทวนแล้ว</div>
+      <div class="rev-sum-chip highlight-red"><strong>${total-reviewed}</strong> ยังไม่ได้ทบทวน</div>
+      <div class="rev-sum-chip highlight-purple"><strong>${mastered}</strong> เชี่ยวชาญ (≥10 ครั้ง)</div>
+      <div class="rev-sum-chip"><strong>${totalPlays}</strong> ครั้งรวมทั้งหมด</div>
+    </div>
+    <div class="review-controls">
+      <input type="text" id="reviewSearchInput" class="review-search" placeholder="🔍 ค้นหาคำหรือความหมาย..." value="${esc(searchVal)}" oninput="onReviewSearch()" />
+      <span class="review-sort-label">เรียงตาม</span>
+      <select id="reviewSortSelect" class="review-sort" onchange="onReviewSort()">
+        <option value="date-desc" ${sortVal==='date-desc'?'selected':''}>วันที่เพิ่ม (ล่าสุดก่อน)</option>
+        <option value="date-asc"  ${sortVal==='date-asc'?'selected':''}>วันที่เพิ่ม (เก่าสุดก่อน)</option>
+        <option value="count-desc"${sortVal==='count-desc'?'selected':''}>ทบทวนมากสุด</option>
+        <option value="count-asc" ${sortVal==='count-asc'?'selected':''}>ทบทวนน้อยสุด</option>
+        <option value="alpha"     ${sortVal==='alpha'?'selected':''}>เรียงตัวอักษร A-Z</option>
+      </select>
+      <button class="btn-reset-counts" onclick="onResetCounts()">🗑 รีเซ็ตทุกครั้ง</button>
+    </div>
+    <div class="review-filter-tabs">
+      <button class="rev-filter-btn ${filter==='all'?'active':''}"        onclick="onReviewFilter('all')">ทั้งหมด (${fc.all})</button>
+      <button class="rev-filter-btn ${filter==='unreviewed'?'active':''}" onclick="onReviewFilter('unreviewed')">⬜ ยังไม่ทบทวน (${fc.unreviewed})</button>
+      <button class="rev-filter-btn ${filter==='low'?'active':''}"        onclick="onReviewFilter('low')">🟡 1–5 ครั้ง (${fc.low})</button>
+      <button class="rev-filter-btn ${filter==='medium'?'active':''}"     onclick="onReviewFilter('medium')">🟠 6–9 ครั้ง (${fc.medium})</button>
+      <button class="rev-filter-btn ${filter==='mastered'?'active':''}"   onclick="onReviewFilter('mastered')">✅ เชี่ยวชาญ ≥10 (${fc.mastered})</button>
+    </div>
+    <div class="review-grid" id="reviewGrid">${cardsHtml}</div>`;
+
+  // Delegated events for review grid
+  document.getElementById('reviewGrid').addEventListener('click', function(e){
+    // TTS button
+    const sp = e.target.closest('.btn-review-speak');
+    if(sp){ const text=sp.dataset.text,key=sp.dataset.reviewKey; if(text)speak(text,sp,key); return; }
+
+    // YouTube button in review card
+    const ytBtn = e.target.closest('.btn-review-yt');
+    if(ytBtn){ openYTModal(ytBtn.dataset.yturl, ytBtn.dataset.phrase); return; }
+
+    // +1 button
+    const pl = e.target.closest('.btn-plus-one');
+    if(pl){
+      const key=pl.dataset.reviewKey;
+      if(key){
+        const nc=incrementReviewCount(key);
+        const bubble=document.querySelector(`.review-count-bubble[data-key="${CSS.escape(key)}"]`);
+        if(bubble){
+          bubble.textContent=nc;
+          const card=bubble.closest('.review-card');
+          card.className='review-card '+getTier(nc)+' pop-anim';
+          card.addEventListener('animationend',()=>card.classList.remove('pop-anim'),{once:true});
+          const bottom=card.querySelector('.review-card-bottom .review-date');
+          if(bottom){const dt=bottom.textContent.replace(/ยังไม่ได้ทบทวน|✓ เชี่ยวชาญ/g,'').trim();bottom.innerHTML=dt+' '+getTierLabel(nc);}
+          updateReviewSummaryBar();
+        }
+      }
+    }
   });
 }
-function onReviewFilter(f){reviewFilter=f;if(window._allRows)renderReview(window._allRows,f);}
-function onReviewSearch(){if(window._allRows)renderReview(window._allRows,reviewFilter);}
-function onReviewSort(){if(window._allRows)renderReview(window._allRows,reviewFilter);}
-function onResetCounts(){if(!confirm('รีเซ็ตจำนวนครั้งทั้งหมดใช่ไหม?'))return;resetReviewCounts();if(window._allRows)renderReview(window._allRows,reviewFilter);}
+
+function onReviewFilter(f){ reviewFilter=f; if(window._allRows)renderReview(window._allRows,f); }
+function onReviewSearch(){ if(window._allRows)renderReview(window._allRows,reviewFilter); }
+function onReviewSort(){ if(window._allRows)renderReview(window._allRows,reviewFilter); }
+function onResetCounts(){ if(!confirm('รีเซ็ตจำนวนครั้งทั้งหมดใช่ไหม?'))return; resetReviewCounts(); if(window._allRows)renderReview(window._allRows,reviewFilter); }
 
 /* ── BOOT ── */
 loadSheet();
